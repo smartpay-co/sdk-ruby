@@ -1,0 +1,66 @@
+{
+	"id": "checkout_test_oTQpCvZzZ52UvKbrN5i4B8",
+	"object": "checkoutSession",
+	"cancelUrl": "https://docs.smartpay.co/example-pages/checkout-canceled",
+	"createdAt": 1633950354307,
+	"customerInfo": {
+		"emailAddress": "rejected@smartpay.co"
+	},
+	"metadata": {},
+	"order": {
+		"id": "order_test_VUjhenWnjSmCSTPTuMMe9Z",
+		"object": "order",
+		"amount": 250,
+		"createdAt": 1633950354307,
+		"currency": "JPY",
+		"lineItems": [
+			{
+				"id": "li_test_PSY6hFtrd2U6x0zlOdJwMP",
+				"object": "lineItem",
+				"metadata": {},
+				"price": {
+					"id": "price_test_NVjsGSr4ANR7kRUtB75jni",
+					"object": "price",
+					"active": true,
+					"amount": 250,
+					"createdAt": 1633950354307,
+					"currency": "JPY",
+					"metadata": {},
+					"product": {
+						"id": "product_test_MbgXUIiqRbQcyEZQe35NRg",
+						"object": "product",
+						"active": true,
+						"categories": [],
+						"createdAt": 1633950354307,
+						"images": [],
+						"metadata": {},
+						"name": "レブロン 18 LOW",
+						"test": true,
+						"updatedAt": 1633950354307
+					},
+					"test": true,
+					"updatedAt": 1633950354307
+				},
+				"quantity": 1,
+				"test": true,
+				"updatedAt": 1633950354307
+			}
+		],
+		"metadata": {},
+		"shippingInfo": {
+			"address": {
+				"line1": "line1",
+				"locality": "locality",
+				"postalCode": "123",
+				"country": "JP"
+			}
+		},
+		"status": "requires_authorization",
+		"test": true,
+		"updatedAt": 1633950354307
+	},
+	"successUrl": "https://docs.smartpay.co/example-pages/checkout-successful",
+	"reference": "order_ref_1234567",
+	"test": true,
+	"updatedAt": 1633950354307
+}
