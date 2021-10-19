@@ -1,56 +1,89 @@
 # Smartpay
 
-Welcome to your new gem! In this directory, you'll find the files you need to be able to package up your Ruby library into a gem. Put your Ruby code in the file `lib/smartpay`. To experiment with that code, run `bin/console` for an interactive prompt.
+The Smartpay Ruby library offers easy access to Smartpay API from applications written in Ruby.
 
-TODO: Delete this and the text above, and describe your gem
+## Requirements
+
+- Ruby 2.6+
+- Smartpay `API keys & secrets`. You can find your credential at the `settings > credentials` page on your [dashboard](https://dashboard.smartpay.co/settings/credentials).
 
 ## Installation
 
 Add the latest version of Smartpay to your project's dependencies:
 
-    $ bundle add smartpay
-
-Or, you can add this line to your application's Gemfile and specify the version restriction:
-
-```ruby
-gem 'smartpay', "~> 0.1.0"
+```sh
+gem install Smartpay
 ```
 
-And then execute:
+If you want to build the gem yourself from source:
 
-    $ bundle install
+```sh
+gem build smartpay.gemspec
+```
 
-## Usage for Ruby on Rails
+### Bundler
 
-After installed the gem package, you can generate relevant files with:
+If you are installing via bundler, make sure that you use the `https` resource in your Gemfile to avoid the risk of gems being compromised:
 
-    $ bundle exec rails generate smartpay:install
+```
+source 'https://rubygems.org'
 
-This will introduce 4 changes, including a simple example for checkout session flow:
+gem 'smartpay'
+```
 
-1. Add new initializer in `config/initializers/smartpay.rb`
-2. Add controller to `app/controllers/smartpays_controller.rb`
-3. Add view to `app/views/smartpays/index.html.erb`
-4. Add routes to `config/routes.rb` for checkout session
+## Use with your favorite frameworks
 
-### Setup Server Credentials
+### Ruby on Rails (RoR)
 
-Make sure you have the credentials (API key & secret) from Smartpay before you can have a working integration.
-You can find your credentials at the `settings > credentials` page on your [dashboard](https://merchant.smartpay.co/settings/credentials).
+#### Install Rails
 
-Update your API key and secret to the fields `public_key` and `api_secret` in `config/initializers/smartpay.rb`.
+```sh
+gem install rails
+```
+
+#### Create your app
+
+```sh
+rails new app-with-smartpay
+```
+
+#### Add Smartpay
+
+```sh
+cd app-with-smartpay
+bundle add smartpay
+```
+
+#### Generator
+
+```sh
+bundle exec rails generate smartpay:install
+```
+
+This introduces 4 changes for a pre-built Smartpay Checkout example:
+
+1. A new initializer - `config/initializers/smartpay.rb`. You will have to update the `config.public_key` and `config.api_secret` with your own credentials to make this work.
+2. A new controller - `app/controllers/smartpays_controller.rb`. This is where you can see how a Checkout session is configured & created.
+3. A new view - `app/views/smartpays/index.html.erb`. The minimum frontend required.
+4. A new route in config/routes.rb.
+
+#### Start your server
+
+```sh
+bundle exec rails server
+```
 
 ### Test with Checkout Session
 
-Start your server and navigate to `http://localhost:3000/smartpays`.
+Visit [http://localhost:3000/smartpays](http://localhost:3000/smartpays).
 
-Click the `checkout` button to be redirected to the Checkout page.
+Click the `checkout` button on the page to be redirected to Smartpay's Checkout.
 
-Replace any of these test accounts to the field `customerInfo.emailAddress` of request payload in `app/controllers/smartpays_controller.rb` to simulate a payment.
+To try out different cases, all you need to do is to update the `customerInfo.emailAddress` in `app/controllers/smartpays_controller.rb` with the following test emails:
 
-1. Payment succeeds: `success@smartpay.co`
-2. Payment requires authentication: `auth.required@smartpay.co`
-3. Payment is declined: `declined@smartpay.co`
+- Payment succeeds: `success@smartpay.co`
+- Payment requires authentication: `auth.required@smartpay.co`
+- Payment is declined: `declined@smartpay.co`
 
 ## Development
 
