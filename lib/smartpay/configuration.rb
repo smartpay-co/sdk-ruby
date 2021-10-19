@@ -3,7 +3,7 @@
 module Smartpay
   class Configuration
     attr_accessor :post_timeout
-    attr_accessor :public_key, :api_secret, :api_url, :checkout_url
+    attr_accessor :public_key, :secret_key, :api_url, :checkout_url
 
     DEFAULT_TIMEOUT_SETTING = 30
     DEFAULT_API_URL = 'https://api.smartpay.co'
