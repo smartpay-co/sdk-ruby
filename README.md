@@ -64,10 +64,10 @@ bundle exec rails generate smartpay:install
 
 This introduces 4 changes for a pre-built Smartpay Checkout example:
 
-1. A new initializer - `config/initializers/smartpay.rb`. You will have to update the `config.public_key` and `config.api_secret` with your own credentials to make this work.
-2. A new controller - `app/controllers/smartpays_controller.rb`. This is where you can see how a Checkout session is configured & created.
-3. A new view - `app/views/smartpays/index.html.erb`. The minimum frontend required.
-4. A new route in config/routes.rb.
+> 1. A new initializer - `config/initializers/smartpay.rb`. You will have to update the `config.public_key` and `config.api_secret` with your own credentials to make this work.
+> 2. A new controller - `app/controllers/smartpays_controller.rb`. This is where you can see how a Checkout session is configured & created.
+> 3. A new view - `app/views/smartpays/index.html.erb`. The minimum frontend required.
+> 4. A new route in config/routes.rb.
 
 #### Fill in your API keys
 
