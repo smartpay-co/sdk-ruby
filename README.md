@@ -25,7 +25,7 @@ gem build smartpay.gemspec
 
 If you are installing via bundler, make sure that you use the `https` resource in your Gemfile to avoid the risk of gems being compromised:
 
-```
+```ruby
 source 'https://rubygems.org'
 
 gem 'smartpay'
