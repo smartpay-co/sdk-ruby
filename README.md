@@ -1,4 +1,4 @@
-# Smartpay
+# Smartpay Ruby Library
 
 The Smartpay Ruby library offers easy access to Smartpay API from applications written in Ruby.
 
