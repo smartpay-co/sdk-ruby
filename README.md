@@ -9,10 +9,12 @@ The Smartpay Ruby library offers easy access to Smartpay API from applications w
 
 ## Installation
 
-Add the latest version of Smartpay to your project's dependencies:
+If you use system built-in Ruby, you might need to be the `sudoer` to be able to `sudo` in some of the following steps. We recommend you to use either [rbenv](https://github.com/rbenv/rbenv) or [rvm](https://rvm.io/) to have your own non-global Ruby to avoid potential permission issues.
+
+Once you have your Ruby in place, add the latest version of Smartpay to your project's dependencies:
 
 ```sh
-gem install Smartpay
+gem install smartpay
 ```
 
 If you want to build the gem yourself from source:
