@@ -69,6 +69,17 @@ This introduces 4 changes for a pre-built Smartpay Checkout example:
 3. A new view - `app/views/smartpays/index.html.erb`. The minimum frontend required.
 4. A new route in config/routes.rb.
 
+#### Fill in your API keys
+
+Edit the keys with your own credentials in `config/initializers/smartpay.rb`.
+
+```ruby
+  ...
+  config.public_key = '<YOUR_PUBLIC_KEY>' # the one starts with pk_test_
+  config.api_secret = '<YOUR_API_SECRET>' # the one starts with sk_test_
+  ...
+```
+
 #### Start your server
 
 ```sh
