@@ -81,11 +81,10 @@ Visit [http://localhost:3000/smartpays](http://localhost:3000/smartpays).
 
 Click the `checkout` button on the page to be redirected to Smartpay's Checkout.
 
-To try out different cases, all you need to do is to update the `customerInfo.emailAddress` in `app/controllers/smartpays_controller.rb` with the following test emails:
+To try out different cases, you can use the following test credit cards for different cases:
 
-- Payment succeeds: `success@smartpay.co`
-- Payment requires authentication: `auth.required@smartpay.co`
-- Payment is declined: `declined@smartpay.co`
+- Payment succeeds: `4242 4242 4242 4242`
+- Payment is declined: `4100 0000 0000 0019`
 
 ## Development
 
