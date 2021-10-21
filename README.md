@@ -2,6 +2,11 @@
 
 The Smartpay Ruby library offers easy access to Smartpay API from applications written in Ruby.
 
+## Documentation
+
+- [Payment Flow](https://docs.smartpay.co/#payment_flow)
+- [API Document](https://api-doc.smartpay.co)
+
 ## Requirements
 
 - Ruby 2.6+
@@ -31,6 +36,66 @@ If you are installing via bundler, make sure that you use the `https` resource i
 source 'https://rubygems.org'
 
 gem 'smartpay'
+```
+
+## Usage
+
+The package needs to be configured with your own API keys, you can find them on your [dashboard](https://dashboard.smartpay.co/settings/credentials).
+
+```ruby
+Smartpay.configure do |config|
+  config.public_api_key = '<YOUR_PUBLIC_API_KEY>' # the one starts with pk_test_
+  config.private_api_key = '<YOUR_PRIVATE_API_KEY>' # the one starts with sk_test_
+end
+```
+
+### Create Checkout session
+
+You can find the description and requirement for request payload in [API Document](https://api-doc.smartpay.co/#8a3538b1-530c-448c-8bae-4a41cdf0b8fd).
+
+```ruby
+payloaad = {
+  "customerInfo": {
+    "emailAddress": "success@smartpay.co",
+  },
+  "orderData": {
+    "amount": 250,
+    "currency": "JPY",
+    "shippingInfo": {
+      "address": {
+        "line1": "line1",
+        "locality": "locality",
+        "postalCode": "123",
+        "country": "JP"
+      },
+    },
+    "lineItemData": [{
+      "priceData": {
+        "productData": {
+          "name": "レブロン 18 LOW",
+        },
+        "amount": 250,
+        "currency": "JPY",
+      },
+      "quantity": 1
+    }]
+  },
+  "reference": "order_ref_1234567",
+  "successUrl": "https://docs.smartpay.co/example-pages/checkout-successful",
+  "cancelUrl": "https://docs.smartpay.co/example-pages/checkout-canceled"
+}
+```
+
+Create a checkout session by using `Smartpay::Api.create_checkout_session` with your request payload.
+
+```ruby
+session = Smartpay::Api.create_checkout_session(payload)
+```
+
+Then, you can redirect your customer to the session url by calling `redirect_url`:
+
+```ruby
+session.redirect_url
 ```
 
 ## Use with your favorite frameworks
