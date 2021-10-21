@@ -10,7 +10,7 @@ module Smartpay
       end
 
       def redirect_url
-        URI.escape("#{checkout_url}/login?session-id=#{response[:id]}&public-key=#{public_key}")
+        URI.escape("#{checkout_url}/login?session-id=#{response[:id]}&public-key=#{public_api_key}")
       end
 
       private
@@ -19,8 +19,8 @@ module Smartpay
         Smartpay.configuration.checkout_url
       end
 
-      def public_key
-        Smartpay.configuration.public_key
+      def public_api_key
+        Smartpay.configuration.public_api_key
       end
     end
   end

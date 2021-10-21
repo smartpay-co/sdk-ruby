@@ -8,7 +8,7 @@ RSpec.describe Smartpay::Responses::CheckoutSession do
 
     before do
       Smartpay.configuration.checkout_url  = 'https://checkout.smartpay.test'
-      Smartpay.configuration.public_key  = 'pk_test_1234'
+      Smartpay.configuration.public_api_key  = 'pk_test_1234'
     end
 
     it do

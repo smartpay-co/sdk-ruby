@@ -24,12 +24,12 @@ module Smartpay
         {
           accept: :json,
           content_type: :json,
-          Authorization: "Basic #{secret_key}"
+          Authorization: "Basic #{private_api_key}"
         }
       end
 
-      def secret_key
-        Smartpay.configuration.secret_key
+      def private_api_key
+        Smartpay.configuration.private_api_key
       end
     end
   end
