@@ -13,6 +13,14 @@ module Smartpay
         URI.escape("#{checkout_url}/login?session-id=#{response[:id]}&public-key=#{public_key}")
       end
 
+      def as_hash
+        @response
+      end
+
+      def as_json
+        @response.to_json
+      end
+
       private
 
       def checkout_url
