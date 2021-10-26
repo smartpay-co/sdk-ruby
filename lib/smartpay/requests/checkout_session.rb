@@ -71,6 +71,7 @@ module Smartpay
 
       def normalize_shipping(shipping)
         return if shipping.nil?
+        shipping= shipping.transform_keys(&:to_sym)
         {
           address: shipping.dig(:address) || {
             line1: shipping.dig(:line1),
