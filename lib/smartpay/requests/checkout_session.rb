@@ -27,13 +27,8 @@ module Smartpay
       end
 
       def normalize_payload
-        currency = nil
-        total_amount = 0
-        items = payload.dig(:lineItemData) || payload.dig(:items)
-        if items.count > 0
-          total_amount = items.inject(0) { |sum, item| sum + (item[:amount] || 0) }
-          currency = items.first.dig(:currency)
-        end
+        currency = get_currency
+        total_amount = get_total_amount
 
         {
           customerInfo: normalize_customer_info(payload.dig(:customerInfo) || payload.dig(:customer) || {}),
@@ -44,7 +39,7 @@ module Smartpay
             confirmationMethod: payload.dig(:confirmationMethod),
             coupons: payload.dig(:coupons),
             shippingInfo: payload.dig(:shippingInfo) || normalize_shipping(payload.dig(:shipping)),
-            lineItemData: items,
+            lineItemData: payload.dig(:orderData, :lineItemData) || payload.dig(:items),
             description: payload.dig(:orderDescription),
             metadata: payload.dig(:orderMetadata)
           }),
@@ -164,6 +159,28 @@ module Smartpay
           url: product.dig(:url),
           metadata: product.dig(:metadata)
         }
+      end
+
+      def get_currency
+        currency = payload.dig(:orderData, :currency) || payload.dig(:orderData, 'currency')
+        if currency.nil?
+          items = payload.dig(:orderData, :lineItemData, :priceData) || payload.dig(:items)
+          if !items.nil? && items.count > 0
+            currency = items.first.dig(:currency)
+          end
+        end
+        currency
+      end
+
+      def get_total_amount
+        total_amount = payload.dig(:orderData, :amount) || payload.dig(:orderData, 'amount')
+        if total_amount.nil?
+          items = payload.dig(:orderData, :lineItemData, :priceData) || payload.dig(:items)
+          if !items.nil? && items.count > 0
+            total_amount = items.inject(0) { |sum, item| sum + (item[:amount] || 0) }
+          end
+        end
+        total_amount
       end
     end
   end
