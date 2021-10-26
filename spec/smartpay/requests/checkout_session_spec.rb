@@ -25,25 +25,41 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
   describe '#normalize_payload' do
     let(:request) do
       {
-        items: [
-          {
-            name: "レブロン 18 LOW",
-            amount: 250,
-            currency: "JPY",
-            quantity: 1,
+        items: [{
+          name: "オリジナルス STAN SMITH",
+          amount: 250,
+          currency: "JPY",
+          quantity: 1
+        }],
+        customer: {
+          accountAge: 20,
+          email: "merchant-support@smartpay.co",
+          firstName: "田中",
+          lastName: "太郎",
+          firstNameKana: "たなか",
+          lastNameKana: "たろう",
+          address: {
+            line1: "3-6-7",
+            line2: "青山パラシオタワー 11階",
+            subLocality: "",
+            locality: "港区北青山",
+            administrativeArea: "東京都",
+            postalCode: "107-0061",
+            country: "JP"
           },
-        ],
-
+          dateOfBirth: "1985-06-30",
+          gender: "male"
+        },
         shipping: {
           line1: "line1",
           locality: "locality",
           postalCode: "123",
-          country: "JP",
+          country: "JP"
         },
         reference: "order_ref_1234567",
         successURL: "https://docs.smartpay.co/example-pages/checkout-successful",
         cancelURL: "https://docs.smartpay.co/example-pages/checkout-canceled",
-        test: true,
+        test: true
       }
     end
 
@@ -70,7 +86,7 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
                 gtin: nil,
                 images: nil,
                 metadata: nil,
-                name: "レブロン 18 LOW",
+                name: "オリジナルス STAN SMITH",
                 reference: nil,
                 url: nil
               }
@@ -97,15 +113,23 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
         successUrl: "https://docs.smartpay.co/example-pages/checkout-successful",
         cancelUrl: "https://docs.smartpay.co/example-pages/checkout-canceled",
         customerInfo: {
-          accountAge: nil,
-          address: nil,
-          dateOfBirth: nil,
-          emailAddress: nil,
-          firstName: nil,
-          firstNameKana: nil,
-          lastName: nil,
-          lastNameKana: nil,
-          legalGender: nil,
+          accountAge: 20,
+          address: {
+            administrativeArea: "東京都",
+            country: "JP",
+            line1: "3-6-7",
+            line2: "青山パラシオタワー 11階",
+            locality: "港区北青山",
+            postalCode: "107-0061",
+            subLocality: ""
+          },
+          dateOfBirth: "1985-06-30",
+          emailAddress: "merchant-support@smartpay.co",
+          firstName: "田中",
+          firstNameKana: "たなか",
+          lastName: "太郎",
+          lastNameKana: "たろう",
+          legalGender: "male",
           phoneNumber: nil,
           reference: nil
         },
