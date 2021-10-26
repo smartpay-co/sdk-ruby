@@ -166,7 +166,7 @@ module Smartpay
         if currency.nil?
           items = payload.dig(:orderData, :lineItemData, :priceData) || payload.dig(:items)
           if !items.nil? && items.count > 0
-            currency = items.first.dig(:currency)
+            currency = items.first.dig(:currency) || item.first.dig('currency')
           end
         end
         currency
@@ -177,7 +177,7 @@ module Smartpay
         if total_amount.nil?
           items = payload.dig(:orderData, :lineItemData, :priceData) || payload.dig(:items)
           if !items.nil? && items.count > 0
-            total_amount = items.inject(0) { |sum, item| sum + (item[:amount] || 0) }
+            total_amount = items.inject(0) { |sum, item| sum + (item[:amount] || item['amount'] || 0) }
           end
         end
         total_amount
