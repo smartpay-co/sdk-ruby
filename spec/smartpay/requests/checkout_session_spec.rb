@@ -302,4 +302,21 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
       end
     end
   end
+
+  describe '#get_currency' do
+    context 'with original backend api payload' do
+      let(:request) do
+        {
+          items: [{
+            name: "オリジナルス STAN SMITH",
+            amount: 250,
+            currency: "JPY",
+            quantity: 1
+          }],
+          successURL: 'https://docs.smartpay.co/example-pages/checkout-successful',
+          cancelURL: 'https://docs.smartpay.co/example-pages/checkout-canceled'
+        }
+      end
+    end
+  end
 end
