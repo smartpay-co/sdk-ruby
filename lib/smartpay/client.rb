@@ -6,7 +6,8 @@ module Smartpay
   class Client
     class << self
       def post(path, payload = {})
-        response = RestClient::Request.execute(method: :post, url: api_url(path), headers: headers, timeout: timeout, payload: payload.to_json)
+        request_payload = default_payload.merge(payload)
+        response = RestClient::Request.execute(method: :post, url: api_url(path), headers: headers, timeout: timeout, payload: request_payload.to_json)
         JSON.parse(response.body, symbolize_names: true)
       end
 
@@ -30,6 +31,13 @@ module Smartpay
 
       def secret_key
         Smartpay.configuration.secret_key
+      end
+
+      def default_payload
+        {
+          'dev-lang': :ruby,
+          'sdk-version': Smartpay::VERSION
+        }.freeze
       end
     end
   end
