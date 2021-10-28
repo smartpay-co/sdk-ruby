@@ -36,7 +36,7 @@ RSpec.describe Smartpay::Configuration do
       context 'when variable include the string `api.smartpay`' do
         before do
           config.api_url = nil
-          ENV['SMARTPAY_API_PREFIX'] = 'https://api.smartpay.co/from_env'
+          ENV['SMARTPAY_API_PREFIX'] = 'https://API.smartpay.co/from_env'
         end
 
         after { ENV['SMARTPAY_API_PREFIX'] = nil }
