@@ -32,6 +32,19 @@ RSpec.describe Smartpay::Configuration do
       end
     end
 
+    context 'when environment has set SMARTPAY_API_PREFIX' do
+      before do
+        config.api_url = nil
+        ENV['SMARTPAY_API_PREFIX'] = 'https://api.smartpay.co/from_env'
+      end
+
+      after { ENV['SMARTPAY_API_PREFIX'] = nil }
+
+      it 'can override the default setting' do
+        expect(config.api_url).to eq('https://api.smartpay.co/from_env')
+      end
+    end
+
     context 'when set api_url to new api url' do
       before { config.api_url = 'https://api.smartpay.co/v2' }
 
