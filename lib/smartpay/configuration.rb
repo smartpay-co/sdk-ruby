@@ -11,7 +11,11 @@ module Smartpay
 
     def initialize
       @post_timeout = DEFAULT_TIMEOUT_SETTING
-      @api_url = ENV['SMARTPAY_API_PREFIX'] || DEFAULT_API_URL
+      @api_url = if in_development_mode?
+                   ENV['SMARTPAY_API_PREFIX'] || DEFAULT_API_URL
+                 else
+                   DEFAULT_API_URL
+                 end
       @checkout_url = DEFAULT_CHECKOUT_URL
     end
 
@@ -20,11 +24,23 @@ module Smartpay
     end
 
     def api_url
-      @api_url || ENV['SMARTPAY_API_PREFIX'] || DEFAULT_API_URL
+      if in_development_mode?
+        @api_url || ENV['SMARTPAY_API_PREFIX'] || DEFAULT_API_URL
+      else
+        @api_url || DEFAULT_API_URL
+      end
     end
 
     def checkout_url
       @checkout_url || DEFAULT_CHECKOUT_URL
+    end
+
+    private
+
+    def in_development_mode?
+      if ENV['SMARTPAY_API_PREFIX'].is_a?(String)
+        ENV['SMARTPAY_API_PREFIX'].include?('api.smartpay')
+      end
     end
   end
 end

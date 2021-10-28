@@ -33,15 +33,30 @@ RSpec.describe Smartpay::Configuration do
     end
 
     context 'when environment has set SMARTPAY_API_PREFIX' do
-      before do
-        config.api_url = nil
-        ENV['SMARTPAY_API_PREFIX'] = 'https://api.smartpay.co/from_env'
+      context 'when variable include the string `api.smartpay`' do
+        before do
+          config.api_url = nil
+          ENV['SMARTPAY_API_PREFIX'] = 'https://api.smartpay.co/from_env'
+        end
+
+        after { ENV['SMARTPAY_API_PREFIX'] = nil }
+
+        it 'can override the default setting' do
+          expect(config.api_url).to eq('https://api.smartpay.co/from_env')
+        end
       end
 
-      after { ENV['SMARTPAY_API_PREFIX'] = nil }
+      context 'when variable does not include the string `api.smartpay`' do
+        before do
+          config.api_url = nil
+          ENV['SMARTPAY_API_PREFIX'] = 'https://somewhere.co/from_env'
+        end
 
-      it 'can override the default setting' do
-        expect(config.api_url).to eq('https://api.smartpay.co/from_env')
+        after { ENV['SMARTPAY_API_PREFIX'] = nil }
+
+        it 'should fallback to the default setting' do
+          expect(config.api_url).to eq('https://api.smartpay.co/v1')
+        end
       end
     end
 
