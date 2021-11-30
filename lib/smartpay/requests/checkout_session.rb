@@ -85,9 +85,9 @@ module Smartpay
             postalCode: shipping.dig(:postalCode),
             country: shipping.dig(:country),
           },
-          addressType: shipping.dig(:addressType)
-          feeAmount: shipping.dig(:feeAmount)
-          feeCurrency: shipping.dig(:feeCurrency)
+          addressType: shipping.dig(:addressType),
+          feeAmount: shipping.dig(:feeAmount),
+          feeCurrency: shipping.dig(:feeCurrency),
         }
       end
 
