@@ -9,8 +9,13 @@ module Smartpay
         @response = response
       end
 
-      def redirect_url
-        URI.escape("#{checkout_url}/login?session-id=#{response[:id]}&public-key=#{public_key}")
+      def redirect_url(options = {})
+        url = "#{checkout_url}/login"
+        promotion_code = options[:promotion_code] || response[:metadata][:__promotion_code__] || nil
+        qs = "session-id=#{URI.encode_www_form_component(response[:id])}&public-key=#{URI.encode_www_form_component(public_key)}"
+        qs = "#{qs}&promotion-code=#{URI.encode_www_form_component(promotion_code)}" if promotion_code
+        
+        "#{url}?#{qs}"
       end
 
       def as_hash
