@@ -29,10 +29,11 @@ module Smartpay
       def normalize_payload
         currency = get_currency
         total_amount = get_total_amount
-        metadata = payload.dig(:metadata) || {}
         promotion_code = payload.dig(:promotionCode)
-        
+        metadata = payload.dig(:metadata) || {}
         metadata[:__promotion_code__] = promotion_code if promotion_code
+        shippingInfo = payload.dig(:shippingInfo) || normalize_shipping(payload.dig(:shipping))
+        shippingInfo[:feeCurrency] = currency if shippingInfo && shippingInfo[:feeCurrency].nil? && !(shippingInfo[:feeAmount].nil?)
 
         {
           customerInfo: normalize_customer_info(payload.dig(:customerInfo) || payload.dig(:customer) || {}),
@@ -42,7 +43,7 @@ module Smartpay
             captureMethod: payload.dig(:captureMethod),
             confirmationMethod: payload.dig(:confirmationMethod),
             coupons: payload.dig(:coupons),
-            shippingInfo: payload.dig(:shippingInfo) || normalize_shipping(payload.dig(:shipping)),
+            shippingInfo: shippingInfo,
             lineItemData: payload.dig(:orderData, :lineItemData) || payload.dig(:items),
             description: payload.dig(:orderDescription),
             metadata: payload.dig(:orderMetadata)
@@ -181,12 +182,22 @@ module Smartpay
 
       def get_total_amount
         total_amount = payload.dig(:orderData, :amount) || payload.dig(:orderData, 'amount')
+        
         if total_amount.nil?
           items = get_items
+          
           if !items.nil? && items.count > 0
             total_amount = items.inject(0) { |sum, item| sum + (item[:amount] || item['amount'] || 0) }
           end
+
+          shipping_fee = payload.dig(:orderData, :shippingInfo, :feeAmount) ||
+                          payload.dig(:orderData, :shippingInfo, 'feeAmount') ||
+                          payload.dig(:shipping, :feeAmount) ||
+                          payload.dig(:shipping, 'feeAmount') ||
+                          0
+          total_amount = shipping_fee + (total_amount || 0)
         end
+
         total_amount
       end
 

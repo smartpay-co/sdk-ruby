@@ -54,7 +54,8 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
           line1: "line1",
           locality: "locality",
           postalCode: "123",
-          country: "JP"
+          country: "JP",
+          feeAmount: 100
         },
         reference: "order_ref_1234567",
         successURL: "https://docs.smartpay.co/example-pages/checkout-successful",
@@ -66,7 +67,7 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
     it do
       expect(subject.send(:normalize_payload)).to eq({
         orderData: {
-          amount: 250,
+          amount: 350,
           captureMethod: nil,
           confirmationMethod: nil,
           coupons: nil,
@@ -107,8 +108,8 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
               subLocality: nil
             },
             addressType: nil,
-            feeAmount: nil,
-            feeCurrency: nil
+            feeAmount: 100,
+            feeCurrency: "JPY"
           }
         },
         reference: "order_ref_1234567",
