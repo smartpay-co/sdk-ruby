@@ -1,13 +1,14 @@
 # frozen_string_literal: true
 
-require 'rest-client'
+require "rest-client"
 
 module Smartpay
   class Client
     class << self
       def post(path, payload = {})
         request_payload = default_payload.merge(payload)
-        response = RestClient::Request.execute(method: :post, url: api_url(path), headers: headers, timeout: timeout, payload: request_payload.to_json)
+        response = RestClient::Request.execute(method: :post, url: api_url(path), headers: headers, timeout: timeout,
+                                               payload: request_payload.to_json)
         JSON.parse(response.body, symbolize_names: true)
       end
 

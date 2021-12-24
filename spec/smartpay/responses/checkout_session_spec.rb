@@ -26,3 +26,23 @@ RSpec.describe Smartpay::Responses::CheckoutSession do
     it { expect(subject.as_json).to be_a(String) }
   end
 end
+
+RSpec.describe Smartpay::Responses::CheckoutSession do
+  subject { Smartpay::Responses::CheckoutSession.new(response) }
+
+  let(:response) { JSON.parse(File.read("./spec/fixtures/checkout_session_promotion.json"), symbolize_names: true) }
+
+  before do
+    Smartpay.configuration.checkout_url  = 'https://checkout.smartpay.test'
+    Smartpay.configuration.public_key  = 'pk_test_1234'
+  end
+
+  describe '#redirect_url' do
+    it do
+      expect(subject.redirect_url).to eq(
+        'https://checkout.smartpay.test/login?session-id=checkout_test_oTQpCvZzZ52UvKbrN5i4B8&public-key=pk_test_1234&promotion-code=ZOO'
+      )
+    end
+  end
+
+end
