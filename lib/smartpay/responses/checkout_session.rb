@@ -2,12 +2,7 @@
 
 module Smartpay
   module Responses
-    class CheckoutSession
-      attr_reader :response
-
-      def initialize(response)
-        @response = response
-      end
+    class CheckoutSession < Base
 
       def redirect_url(options = {})
         url = "#{checkout_url}/login"
@@ -16,14 +11,6 @@ module Smartpay
         qs = "#{qs}&promotion-code=#{URI.encode_www_form_component(promotion_code)}" if promotion_code
         
         "#{url}?#{qs}"
-      end
-
-      def as_hash
-        @response
-      end
-
-      def as_json
-        @response.to_json
       end
 
       private
