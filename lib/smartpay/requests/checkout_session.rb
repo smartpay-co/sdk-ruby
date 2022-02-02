@@ -29,9 +29,6 @@ module Smartpay
       def normalize_payload
         currency = get_currency
         total_amount = get_total_amount
-        promotion_code = payload.dig(:promotionCode)
-        metadata = payload.dig(:metadata) || {}
-        metadata[:__promotion_code__] = promotion_code if promotion_code
         shippingInfo = payload.dig(:shippingInfo) || normalize_shipping(payload.dig(:shipping))
         shippingInfo[:feeCurrency] = currency if shippingInfo && shippingInfo[:feeCurrency].nil? && !(shippingInfo[:feeAmount].nil?)
 
@@ -46,10 +43,9 @@ module Smartpay
             shippingInfo: shippingInfo,
             lineItemData: payload.dig(:orderData, :lineItemData) || payload.dig(:items),
             description: payload.dig(:orderDescription),
-            metadata: payload.dig(:orderMetadata)
+            metadata: payload.dig(:orderMetadata),
+            reference: payload.dig(:reference),
           }),
-          reference: payload.dig(:reference),
-          metadata: metadata,
           successUrl: payload.dig(:successURL),
           cancelUrl: payload.dig(:cancelURL),
           test: payload.dig(:test) || false
@@ -106,7 +102,9 @@ module Smartpay
           confirmationMethod: order.dig(:confirmationMethod),
           coupons: order.dig(:coupons),
           shippingInfo: order.dig(:shippingInfo),
-          lineItemData: normalize_line_items(order.dig(:lineItemData) || order.dig(:items))
+          lineItemData: normalize_line_items(order.dig(:lineItemData) || order.dig(:items)),
+          metadata: order.dig(:metadata) || {},
+          reference: order.dig(:reference)
         }
       end
 

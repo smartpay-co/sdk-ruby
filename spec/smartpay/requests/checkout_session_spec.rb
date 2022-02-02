@@ -110,9 +110,10 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
             addressType: nil,
             feeAmount: 100,
             feeCurrency: "JPY"
-          }
+          },
+          metadata: {},
+          reference: "order_ref_1234567",
         },
-        reference: "order_ref_1234567",
         successUrl: "https://docs.smartpay.co/example-pages/checkout-successful",
         cancelUrl: "https://docs.smartpay.co/example-pages/checkout-canceled",
         customerInfo: {
@@ -136,134 +137,10 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
           phoneNumber: nil,
           reference: nil
         },
-        metadata: {},
         test: true
       })
     end
   end
-
-  describe '#normalize_payload_promotion' do
-    let(:request) do
-      {
-        items: [{
-          name: "オリジナルス STAN SMITH",
-          amount: 250,
-          currency: "JPY",
-          quantity: 1
-        }],
-        customer: {
-          accountAge: 20,
-          email: "merchant-support@smartpay.co",
-          firstName: "田中",
-          lastName: "太郎",
-          firstNameKana: "たなか",
-          lastNameKana: "たろう",
-          address: {
-            line1: "3-6-7",
-            line2: "青山パラシオタワー 11階",
-            subLocality: "",
-            locality: "港区北青山",
-            administrativeArea: "東京都",
-            postalCode: "107-0061",
-            country: "JP"
-          },
-          dateOfBirth: "1985-06-30",
-          gender: "male"
-        },
-        shipping: {
-          line1: "line1",
-          locality: "locality",
-          postalCode: "123",
-          country: "JP"
-        },
-        reference: "order_ref_1234567",
-        successURL: "https://docs.smartpay.co/example-pages/checkout-successful",
-        cancelURL: "https://docs.smartpay.co/example-pages/checkout-canceled",
-        promotionCode: "FOO",
-        test: true
-      }
-    end
-
-    it do
-      expect(subject.send(:normalize_payload)).to eq({
-        orderData: {
-          amount: 250,
-          captureMethod: nil,
-          confirmationMethod: nil,
-          coupons: nil,
-          currency: "JPY",
-          lineItemData: [{
-            description: nil,
-            metadata: nil,
-            price: nil,
-            priceData: {
-              amount: 250,
-              currency: "JPY",
-              metadata: nil,
-              productData: {
-                brand: nil,
-                categories: nil,
-                description: nil,
-                gtin: nil,
-                images: nil,
-                metadata: nil,
-                name: "オリジナルス STAN SMITH",
-                reference: nil,
-                url: nil
-              }
-            },
-            quantity: 1
-          }],
-          shippingInfo: {
-            address: {
-              administrativeArea: nil,
-              country: "JP",
-              line1: "line1",
-              line2: nil,
-              line3: nil,
-              line4: nil,
-              line5: nil,
-              locality: "locality",
-              postalCode: "123",
-              subLocality: nil
-            },
-            addressType: nil,
-            feeAmount: nil,
-            feeCurrency: nil
-          }
-        },
-        reference: "order_ref_1234567",
-        successUrl: "https://docs.smartpay.co/example-pages/checkout-successful",
-        cancelUrl: "https://docs.smartpay.co/example-pages/checkout-canceled",
-        customerInfo: {
-          accountAge: 20,
-          address: {
-            administrativeArea: "東京都",
-            country: "JP",
-            line1: "3-6-7",
-            line2: "青山パラシオタワー 11階",
-            locality: "港区北青山",
-            postalCode: "107-0061",
-            subLocality: ""
-          },
-          dateOfBirth: "1985-06-30",
-          emailAddress: "merchant-support@smartpay.co",
-          firstName: "田中",
-          firstNameKana: "たなか",
-          lastName: "太郎",
-          lastNameKana: "たろう",
-          legalGender: "male",
-          phoneNumber: nil,
-          reference: nil
-        },
-        metadata: {
-          "__promotion_code__": "FOO"
-        },
-        test: true
-      })
-    end
-  end
-
 
   describe '#normalize_customer_info' do
     let(:request) { {} }
@@ -337,7 +214,9 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
           coupons: nil,
           currency: nil,
           lineItemData: [],
-          shippingInfo: nil
+          shippingInfo: nil,
+          metadata: {},
+          reference: nil,
         })
       end
     end
