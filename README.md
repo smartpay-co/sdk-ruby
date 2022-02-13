@@ -58,28 +58,22 @@ payloaad = {
   "customerInfo": {
     "emailAddress": "success@smartpay.co",
   },
-  "orderData": {
+  "amount": 250,
+  "currency": "JPY",
+  "shippingInfo": {
+    "address": {
+      "line1": "line1",
+      "locality": "locality",
+      "postalCode": "123",
+      "country": "JP"
+    },
+  },
+  "items": [{
+    "name": "レブロン 18 LOW",
     "amount": 250,
     "currency": "JPY",
-    "shippingInfo": {
-      "address": {
-        "line1": "line1",
-        "locality": "locality",
-        "postalCode": "123",
-        "country": "JP"
-      },
-    },
-    "lineItemData": [{
-      "priceData": {
-        "productData": {
-          "name": "レブロン 18 LOW",
-        },
-        "amount": 250,
-        "currency": "JPY",
-      },
-      "quantity": 1
-    }]
-  },
+    "quantity": 1
+  }],
   "reference": "order_ref_1234567",
   "successUrl": "https://docs.smartpay.co/example-pages/checkout-successful",
   "cancelUrl": "https://docs.smartpay.co/example-pages/checkout-canceled"
