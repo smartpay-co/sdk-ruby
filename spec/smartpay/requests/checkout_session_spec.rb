@@ -13,8 +13,10 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
     context 'when the raw_payload is not contained customerInfo' do
       let(:request) do
         {
-          successURL: 'https://docs.smartpay.co/example-pages/checkout-successful',
-          cancelURL: 'https://docs.smartpay.co/example-pages/checkout-canceled'
+          successUrl: 'https://docs.smartpay.co/example-pages/checkout-successful',
+          cancelUrl: 'https://docs.smartpay.co/example-pages/checkout-canceled',
+          currency: 'JPY',
+          items: []
         }
       end
 
@@ -25,6 +27,8 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
   describe '#normalize_payload' do
     let(:request) do
       {
+        amount: 350,
+        currency: "JPY",
         items: [{
           name: "オリジナルス STAN SMITH",
           amount: 250,
@@ -66,54 +70,51 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
 
     it do
       expect(subject.send(:normalize_payload)).to eq({
-        orderData: {
-          amount: 350,
-          captureMethod: nil,
-          confirmationMethod: nil,
-          coupons: nil,
+        amount: 350,
+        captureMethod: nil,
+        currency: "JPY",
+        items: [{
+          quantity: 1,
+          label: nil,
+          description: nil,
+          productDescription: nil,
+          priceDescription: nil,
+          metadata: nil,
+          productMetadata: nil,
+          priceMetadata: nil,
+          amount: 250,
           currency: "JPY",
-          lineItemData: [{
-            description: nil,
-            metadata: nil,
-            price: nil,
-            priceData: {
-              amount: 250,
-              currency: "JPY",
-              metadata: nil,
-              productData: {
-                brand: nil,
-                categories: nil,
-                description: nil,
-                gtin: nil,
-                images: nil,
-                metadata: nil,
-                name: "オリジナルス STAN SMITH",
-                reference: nil,
-                url: nil
-              }
-            },
-            quantity: 1
-          }],
-          shippingInfo: {
-            address: {
-              administrativeArea: nil,
-              country: "JP",
-              line1: "line1",
-              line2: nil,
-              line3: nil,
-              line4: nil,
-              line5: nil,
-              locality: "locality",
-              postalCode: "123",
-              subLocality: nil
-            },
-            addressType: nil,
-            feeAmount: 100,
-            feeCurrency: "JPY"
+          metadata: nil,
+          brand: nil,
+          categories: nil,
+          description: nil,
+          gtin: nil,
+          images: nil,
+          metadata: nil,
+          name: "オリジナルス STAN SMITH",
+          reference: nil,
+          url: nil
+        }],
+        shippingInfo: {
+          address: {
+            administrativeArea: nil,
+            country: "JP",
+            line1: "line1",
+            line2: nil,
+            line3: nil,
+            line4: nil,
+            line5: nil,
+            locality: "locality",
+            postalCode: "123",
+            subLocality: nil
           },
-          metadata: {},
-          reference: "order_ref_1234567",
+          addressType: nil,
+          feeAmount: 100,
+          feeCurrency: "JPY"
         },
+        description: nil,
+        metadata: {},
+        reference: "order_ref_1234567",
         successUrl: "https://docs.smartpay.co/example-pages/checkout-successful",
         cancelUrl: "https://docs.smartpay.co/example-pages/checkout-canceled",
         customerInfo: {
@@ -198,131 +199,37 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
     end
   end
 
-  describe '#normalize_order_data' do
+  describe '#normalize_items' do
     let(:request) { {} }
 
     context 'when argument is nil' do
-      it { expect(subject.send(:normalize_order_data, nil)).to be nil }
+      it { expect(subject.send(:normalize_items, nil)).to eq([]) }
     end
 
     context 'when argument is not nil' do
       it do
-        expect(subject.send(:normalize_order_data, { amount: 1 })).to eq({
-          amount: 1,
-          captureMethod: nil,
-          confirmationMethod: nil,
-          coupons: nil,
-          currency: nil,
-          lineItemData: [],
-          shippingInfo: nil,
-          metadata: {},
-          reference: nil,
-        })
-      end
-    end
-  end
-
-  describe '#normalize_line_items' do
-    let(:request) { {} }
-
-    context 'when argument is nil' do
-      it { expect(subject.send(:normalize_line_items, nil)).to eq([]) }
-    end
-
-    context 'when argument is not nil' do
-      it do
-        expect(subject.send(:normalize_line_items, [{ quantity: 1 }])).to eq([{
+        expect(subject.send(:normalize_items, [{ quantity: 1 }])).to eq([{
+          quantity: 1,
           description: nil,
+          productDescription: nil,
+          priceDescription: nil,
           metadata: nil,
-          price: nil,
-          priceData: {
-            amount: nil,
-            currency: nil,
-            metadata: nil,
-            productData: {
-              brand: nil,
-              categories: nil,
-              description: nil,
-              gtin: nil,
-              images: nil,
-              metadata: nil,
-              name: nil,
-              reference: nil,
-              url: nil
-            }
-          },
-          quantity: 1
-        }])
-      end
-    end
-  end
-
-  describe '#normalize_price_data' do
-    let(:request) { {} }
-
-    context 'when argument is nil' do
-      it { expect(subject.send(:normalize_product_data, nil)).to be nil }
-    end
-
-    context 'when argument is not nil' do
-      it do
-        expect(subject.send(:normalize_price_data, { amount: 250, currency: 'JPY' })).to eq({
-          amount: 250,
-          currency: "JPY",
+          productMetadata: nil,
+          priceMetadata: nil,
+          label: nil,
+          amount: nil,
+          currency: nil,
           metadata: nil,
-          productData: { 
-            brand: nil,
-            categories: nil,
-            description: nil,
-            gtin: nil,
-            images: nil,
-            metadata: nil,
-            name: nil,
-            reference: nil,
-            url: nil
-          }
-        })
-      end
-    end
-  end
-
-  describe '#normalize_product_data' do
-    let(:request) { {} }
-
-    context 'when argument is nil' do
-      it { expect(subject.send(:normalize_product_data, nil)).to be nil }
-    end
-
-    context 'when argument is not nil' do
-      it do
-        expect(subject.send(:normalize_product_data, { "name" => "レブロン 18 LOW" })).to eq({
           brand: nil,
           categories: nil,
           description: nil,
           gtin: nil,
           images: nil,
           metadata: nil,
-          name: 'レブロン 18 LOW',
+          name: nil,
           reference: nil,
           url: nil
-        })
-      end
-    end
-  end
-
-  describe '#get_currency' do
-    context 'with original backend api payload' do
-      let(:request) do
-        {
-          items: [{
-            name: "オリジナルス STAN SMITH",
-            amount: 250,
-            currency: "JPY",
-            quantity: 1
-          }],
-          successURL: 'https://docs.smartpay.co/example-pages/checkout-successful',
-          cancelURL: 'https://docs.smartpay.co/example-pages/checkout-canceled'
-        }
+        }])
       end
     end
   end
