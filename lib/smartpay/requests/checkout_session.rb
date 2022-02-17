@@ -97,7 +97,6 @@ module Smartpay
             quantity: line_item.dig(:quantity),
             label: line_item.dig(:label),
             name: line_item.dig(:name),
-            description: line_item.dig(:description),
             amount: line_item.dig(:amount),
             currency: line_item.dig(:currency),
             brand: line_item.dig(:brand),
