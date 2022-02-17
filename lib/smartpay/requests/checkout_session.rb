@@ -42,8 +42,8 @@ module Smartpay
           items: normalize_items(payload.dig(:items)),
           metadata: payload.dig(:metadata) || {},
           reference: payload.dig(:reference),
-          successUrl: payload.dig(:successURL),
-          cancelUrl: payload.dig(:cancelURL),
+          successUrl: payload.dig(:successUrl),
+          cancelUrl: payload.dig(:cancelUrl),
           test: payload.dig(:test) || false
         }
       end
