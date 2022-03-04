@@ -5,6 +5,14 @@ require "rest-client"
 module Smartpay
   class Client
     class << self
+      def get(path, payload = {})
+        request_payload = default_payload.merge(payload)
+        response = RestClient::Request.execute(method: :get, url: api_url(path),
+                                               headers: headers.merge(params: request_payload),
+                                               timeout: timeout)
+        JSON.parse(response.body, symbolize_names: true)
+      end
+
       def post(path, payload = {})
         request_payload = default_payload.merge(payload)
         response = RestClient::Request.execute(method: :post, url: api_url(path), headers: headers, timeout: timeout,
