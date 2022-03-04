@@ -44,7 +44,6 @@ module Smartpay
           reference: payload.dig(:reference),
           successUrl: payload.dig(:successUrl),
           cancelUrl: payload.dig(:cancelUrl),
-          test: payload.dig(:test) || false
         }
       end
 
