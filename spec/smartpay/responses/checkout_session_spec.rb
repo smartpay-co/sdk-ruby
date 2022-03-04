@@ -18,18 +18,6 @@ RSpec.describe Smartpay::Responses::CheckoutSession do
         )
       end
     end
-
-    context 'with promotion code' do
-      let(:response) { JSON.parse(File.read("./spec/fixtures/checkout_session_promotion.json"), symbolize_names: true) }
-
-      describe '#redirect_url' do
-        it do
-          expect(subject.redirect_url).to eq(
-            'https://checkout.smartpay.test/login?session-id=checkout_test_oTQpCvZzZ52UvKbrN5i4B8&public-key=pk_test_1234&promotion-code=ZOO'
-          )
-        end
-      end
-    end
   end
 
   describe '#as_hash' do

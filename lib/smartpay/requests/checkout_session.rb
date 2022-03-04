@@ -42,8 +42,8 @@ module Smartpay
           items: normalize_items(payload.dig(:items)),
           metadata: payload.dig(:metadata) || {},
           reference: payload.dig(:reference),
-          successUrl: payload.dig(:successURL),
-          cancelUrl: payload.dig(:cancelURL),
+          successUrl: payload.dig(:successUrl),
+          cancelUrl: payload.dig(:cancelUrl),
           test: payload.dig(:test) || false
         }
       end
@@ -97,7 +97,6 @@ module Smartpay
             quantity: line_item.dig(:quantity),
             label: line_item.dig(:label),
             name: line_item.dig(:name),
-            description: line_item.dig(:description),
             amount: line_item.dig(:amount),
             currency: line_item.dig(:currency),
             brand: line_item.dig(:brand),

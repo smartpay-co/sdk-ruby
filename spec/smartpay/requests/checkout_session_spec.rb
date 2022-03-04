@@ -4,7 +4,7 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
   subject { Smartpay::Requests::CheckoutSession.new(request) }
 
   describe '#check_requirement!' do
-    context 'when the raw_payload is not contained successURL' do
+    context 'when the raw_payload is not contained successUrl' do
       let(:request) { {} }
 
       it { expect { subject.send(:check_requirement!) }.to raise_error(Smartpay::Errors::InvalidRequestPayloadError) }
@@ -62,8 +62,8 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
           feeAmount: 100
         },
         reference: "order_ref_1234567",
-        successURL: "https://docs.smartpay.co/example-pages/checkout-successful",
-        cancelURL: "https://docs.smartpay.co/example-pages/checkout-canceled",
+        successUrl: "https://docs.smartpay.co/example-pages/checkout-successful",
+        cancelUrl: "https://docs.smartpay.co/example-pages/checkout-canceled",
         test: true
       }
     end
