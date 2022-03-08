@@ -60,6 +60,7 @@
     "updatedAt": 1633950354307
   },
   "successUrl": "https://docs.smartpay.co/example-pages/checkout-successful",
+  "url": "https://checkout.smartpay.co/checkout_test_oTQpCvZzZ52UvKbrN5i4B8",
   "reference": "order_ref_1234567",
   "test": true,
   "updatedAt": 1633950354307

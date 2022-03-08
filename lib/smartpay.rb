@@ -12,6 +12,9 @@ require_relative "smartpay/responses/base"
 require_relative "smartpay/responses/checkout_session"
 
 module Smartpay
+  REJECT_REQUEST_BY_CUSTOMER = 'requested_by_customer'
+  REJECT_FRAUDULENT = 'fraudulent'
+  
   class << self
     attr_accessor :configuration
 

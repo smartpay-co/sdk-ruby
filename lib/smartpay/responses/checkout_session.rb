@@ -7,10 +7,11 @@ module Smartpay
       def redirect_url(options = {})
         url = response[:url]
 
-        if options and options[:promotionCode]
+        if options && options[:promotionCode]
           qs = "?promotion-code=#{options[:promotionCode]}"
 
           return "#{url}#{qs}"
+        end
         
         url
       end

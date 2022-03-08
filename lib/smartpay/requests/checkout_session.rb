@@ -5,8 +5,8 @@ module Smartpay
     class CheckoutSession
       attr_accessor :payload
 
-      REQUIREMENT_KEY_NAME = [:successUrl, :cancelUrl, :customerInfo, :currency, :items].freeze
-      CAN_FALLBACK_KEYS = [:customerInfo].freeze
+      REQUIREMENT_KEY_NAME = [:successUrl, :cancelUrl, :customer, :currency, :items].freeze
+      CAN_FALLBACK_KEYS = [:customer].freeze
 
       def initialize(raw_payload)
         @payload = raw_payload.transform_keys(&:to_sym)

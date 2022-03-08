@@ -12,6 +12,7 @@ RSpec.describe Smartpay::Api do
     context 'with valid request payload' do
       it do
         session = Smartpay::Api.create_checkout_session({
+          currency: 'JPY',
           items: [
             {
               name: 'オリジナルス STAN SMITH',
@@ -49,8 +50,8 @@ RSpec.describe Smartpay::Api do
             country: 'JP',
           },
           reference: 'order_ref_1234567',
-          successURL: 'https://docs.smartpay.co/example-pages/checkout-successful',
-          cancelURL: 'https://docs.smartpay.co/example-pages/checkout-canceled',
+          successUrl: 'https://docs.smartpay.co/example-pages/checkout-successful',
+          cancelUrl: 'https://docs.smartpay.co/example-pages/checkout-canceled',
         })
         expect(session.response).not_to be_empty
         expect(session.redirect_url).not_to be_empty
@@ -63,7 +64,7 @@ RSpec.describe Smartpay::Api do
       it do
         orders = Smartpay::Api.get_orders(
           page_token: 'cjPY2pcYqrjRybZOgW7cIfpNSfp9vnJlMn21K1wET4bqn5tpFUzyhe4SG4kzQtADU2H9gCUk624crc78mJb9x0F2pZjc',
-          limit: 1,
+          max_results: 1,
         )
         expect(orders.response).not_to be_empty
         expect(orders.response[:data].size).to be 1

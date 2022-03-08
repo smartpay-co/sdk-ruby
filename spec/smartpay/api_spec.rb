@@ -15,7 +15,7 @@ RSpec.describe Smartpay::Api do
 
   describe '.get_orders' do
     it do
-      expect(Smartpay::Client).to receive(:get).with('/orders', { page: 1, count: 20 }).once
+      expect(Smartpay::Client).to receive(:get).with('/orders', { pageToken: nil, maxResults: nil, expand: '' }).once
       expect(Smartpay::Api.get_orders).to be_an_instance_of(Smartpay::Responses::Base)
     end
   end
