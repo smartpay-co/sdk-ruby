@@ -13,7 +13,7 @@ module Smartpay
         Responses::Base.new(Client.get("/orders", { pageToken: page_token, maxResults: max_results, expand: expand }))
       end
 
-      def get_order(id, page_token: nil, expand: '' )
+      def get_order(id, expand: '' )
         Responses::Base.new(Client.get("/orders/%s" % id, { expand: expand }))
       end
 
