@@ -40,15 +40,22 @@ RSpec.describe Smartpay::Api do
             dateOfBirth: '1985-06-30',
             gender: 'male',
           },
-          shipping: {
-            line1: '北青山 3-6-7',
-            line2: '青山パラシオタワー 11階',
-            subLocality: '',
-            locality: '港区',
-            administrativeArea: '東京都',
-            postalCode: '107-0061',
-            country: 'JP',
+          shippingInfo: {
+            address:{
+              line1: '北青山 3-6-7',
+              line2: '青山パラシオタワー 11階',
+              subLocality: '',
+              locality: '港区',
+              administrativeArea: '東京都',
+              postalCode: '107-0061',
+              country: 'JP',
+            },
+            feeAmount: 100,
+            feeCurrency: 'JPY',
           },
+
+          captureMethod: 'manual',
+
           reference: 'order_ref_1234567',
           successUrl: 'https://docs.smartpay.co/example-pages/checkout-successful',
           cancelUrl: 'https://docs.smartpay.co/example-pages/checkout-canceled',
