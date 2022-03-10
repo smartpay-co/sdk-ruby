@@ -138,7 +138,6 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
           phoneNumber: nil,
           reference: nil
         },
-        test: true
       })
     end
   end

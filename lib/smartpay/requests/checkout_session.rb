@@ -5,8 +5,8 @@ module Smartpay
     class CheckoutSession
       attr_accessor :payload
 
-      REQUIREMENT_KEY_NAME = [:successUrl, :cancelUrl, :customerInfo, :currency, :items].freeze
-      CAN_FALLBACK_KEYS = [:customerInfo].freeze
+      REQUIREMENT_KEY_NAME = [:successUrl, :cancelUrl, :customer, :currency, :items].freeze
+      CAN_FALLBACK_KEYS = [:customer].freeze
 
       def initialize(raw_payload)
         @payload = raw_payload.transform_keys(&:to_sym)
@@ -32,9 +32,11 @@ module Smartpay
           shipping_info[:feeCurrency] = payload.dig(:currency)
         end
 
+        total_amount = get_total_amount
+
         {
           customerInfo: normalize_customer_info(payload.dig(:customerInfo) || payload.dig(:customer) || {}),
-          amount: payload.dig(:amount),
+          amount: total_amount,
           captureMethod: payload.dig(:captureMethod),
           currency: payload.dig(:currency),
           description: payload.dig(:description),
@@ -44,7 +46,6 @@ module Smartpay
           reference: payload.dig(:reference),
           successUrl: payload.dig(:successUrl),
           cancelUrl: payload.dig(:cancelUrl),
-          test: payload.dig(:test) || false
         }
       end
 
@@ -113,6 +114,26 @@ module Smartpay
             priceMetadata: line_item.dig(:priceMetadata)
           }
         end
+      end
+
+
+      def get_total_amount
+        total_amount = payload.dig(:amount) || payload.dig('amount')
+
+        if total_amount.nil?
+          items = payload.dig(:items)
+
+          if !items.nil? && items.count > 0
+            total_amount = items.inject(0) { |sum, item| sum + (item[:amount] || item['amount'] || 0) }
+          end
+
+          shipping_fee = payload.dig(:shippingInfo, :feeAmount) ||
+                          payload.dig(:shippingInfo, 'feeAmount') ||
+                          0
+          total_amount = shipping_fee + (total_amount || 0)
+        end
+
+        total_amount
       end
     end
   end

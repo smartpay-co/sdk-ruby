@@ -5,10 +5,15 @@ module Smartpay
     class CheckoutSession < Base
 
       def redirect_url(options = {})
-        url = "#{checkout_url}/login"
-        qs = "session-id=#{URI.encode_www_form_component(response[:id])}&public-key=#{URI.encode_www_form_component(public_key)}"
+        url = response[:url]
+
+        if options && options[:promotionCode]
+          qs = "?promotion-code=#{options[:promotionCode]}"
+
+          return "#{url}#{qs}"
+        end
         
-        "#{url}?#{qs}"
+        url
       end
 
       private
