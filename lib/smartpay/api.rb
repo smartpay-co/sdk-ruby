@@ -17,6 +17,12 @@ module Smartpay
         Responses::Base.new(Client.get("/orders/%s" % id, { expand: expand }))
       end
 
+      def cancel_order(id)
+        Responses::Base.new(
+          Client.put("/orders/%s/cancellation" % id)
+        )
+      end
+
       def create_payment(payload)
         Responses::Base.new(
           Client.post("/payments", Requests::Payment.new(payload).as_hash)
@@ -27,6 +33,10 @@ module Smartpay
         create_payment(payload)
       end
 
+      def get_payment(id, expand: '' )
+        Responses::Base.new(Client.get("/payments/%s" % id, { expand: expand }))
+      end
+
       def create_refund(payload)
         Responses::Base.new(
           Client.post("/refunds", Requests::Refund.new(payload).as_hash)
@@ -35,6 +45,10 @@ module Smartpay
 
       def refund(payload)
         create_refund(payload)
+      end
+
+      def get_refund(id, expand: '' )
+        Responses::Base.new(Client.get("/refunds/%s" % id, { expand: expand }))
       end
 
     end

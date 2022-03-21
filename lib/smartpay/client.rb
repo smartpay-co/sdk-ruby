@@ -20,6 +20,13 @@ module Smartpay
         JSON.parse(response.body, symbolize_names: true)
       end
 
+      def put(path, payload = {})
+        request_payload = default_payload.merge(payload)
+        response = RestClient::Request.execute(method: :put, url: api_url(path), headers: headers, timeout: timeout,
+                                               payload: request_payload.to_json)
+        JSON.parse(response.body, symbolize_names: true)
+      end
+
       private
 
       def api_url(path)
