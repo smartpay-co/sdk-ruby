@@ -151,6 +151,99 @@ RSpec.describe Smartpay::Api do
 
       end
     end
+
+    context 'cancel an order' do
+      it do
+        session = Smartpay::Api.create_checkout_session({
+          currency: 'JPY',
+          items: [
+            {
+              name: 'オリジナルス STAN SMITH',
+              amount: 250,
+              currency: 'JPY',
+              quantity: 1,
+            },
+          ],
+          customer: {
+            accountAge: 20,
+            email: 'merchant-support@smartpay.co',
+            firstName: '田中',
+            lastName: '太郎',
+            firstNameKana: 'たなか',
+            lastNameKana: 'たろう',
+            address: {
+              line1: '北青山 3-6-7',
+              line2: '青山パラシオタワー 11階',
+              subLocality: '',
+              locality: '港区',
+              administrativeArea: '東京都',
+              postalCode: '107-0061',
+              country: 'JP',
+            },
+            dateOfBirth: '1985-06-30',
+            gender: 'male',
+          },
+          shippingInfo: {
+            address:{
+              line1: '北青山 3-6-7',
+              line2: '青山パラシオタワー 11階',
+              subLocality: '',
+              locality: '港区',
+              administrativeArea: '東京都',
+              postalCode: '107-0061',
+              country: 'JP',
+            },
+            feeAmount: 100,
+            feeCurrency: 'JPY',
+          },
+
+          captureMethod: 'manual',
+
+          reference: 'order_ref_1234567',
+          successUrl: 'https://docs.smartpay.co/example-pages/checkout-successful',
+          cancelUrl: 'https://docs.smartpay.co/example-pages/checkout-canceled',
+        })
+
+        expect(session.response).not_to be_empty
+        expect(session.redirect_url).not_to be_empty
+
+        order_id = session.response[:order][:id]
+
+        login_payload = {
+          emailAddress: ENV['TEST_USERNAME'],
+          password: ENV['TEST_PASSWORD']
+        }
+
+        login_response = RestClient::Request.execute(method: :post, url: "https://#{ENV['API_BASE']}/consumers/auth/login",
+                                               timeout: Smartpay.configuration.post_timeout,
+                                               headers: {
+                                                 accept: :json,
+                                                 content_type: :json,
+                                               },
+                                               payload: login_payload.to_json)
+        login_response_data = JSON.parse(login_response.body, symbolize_names: true)
+        access_token = login_response_data[:accessToken]
+
+        authorization_payload = {
+          paymentMethod: "pm_test_visaApproved",
+          paymentPlan: "pay_in_three"
+        }
+
+        authorization_response = RestClient::Request.execute(method: :post, url: "https://#{ENV['API_BASE']}/orders/#{order_id}/authorizations",
+          timeout: Smartpay.configuration.post_timeout,
+          headers: {
+            accept: :json,
+            content_type: :json,
+            Authorization: "Bearer #{access_token}"
+          },
+          payload: authorization_payload.to_json)
+
+        result = Smartpay::Api.cancel_order(order_id);
+
+        expect(result.as_hash[:status]).to eq 'canceled'
+      end
+    end
+
   end
 
   describe '.get_orders' do
