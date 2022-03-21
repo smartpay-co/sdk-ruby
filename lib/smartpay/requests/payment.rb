@@ -30,6 +30,7 @@ module Smartpay
           amount: payload.dig(:amount),
           currency: payload.dig(:currency),
           reference: payload.dig(:reference),
+          cancelMethod: payload.dig(:cancel_method),
           description: payload.dig(:description),
           metadata: payload.dig(:metadata) || {},
         }

@@ -5,16 +5,16 @@ module Smartpay
     class << self
       def create_checkout_session(payload)
         Responses::CheckoutSession.new(
-          Client.post("/checkout-sessions", Requests::CheckoutSession.new(payload).as_hash)
+          Client.post("/checkout-sessions", params: {}, payload: Requests::CheckoutSession.new(payload).as_hash)
         )
       end
 
       def get_orders(page_token: nil, max_results: nil, expand: '' )
-        Responses::Base.new(Client.get("/orders", { pageToken: page_token, maxResults: max_results, expand: expand }))
+        Responses::Base.new(Client.get("/orders", params: { pageToken: page_token, maxResults: max_results, expand: expand }))
       end
 
       def get_order(id, expand: '' )
-        Responses::Base.new(Client.get("/orders/%s" % id, { expand: expand }))
+        Responses::Base.new(Client.get("/orders/%s" % id, params: { expand: expand }))
       end
 
       def cancel_order(id)
@@ -25,7 +25,7 @@ module Smartpay
 
       def create_payment(payload)
         Responses::Base.new(
-          Client.post("/payments", Requests::Payment.new(payload).as_hash)
+          Client.post("/payments", params:{}, payload: Requests::Payment.new(payload).as_hash)
         )
       end
 
@@ -34,12 +34,12 @@ module Smartpay
       end
 
       def get_payment(id, expand: '' )
-        Responses::Base.new(Client.get("/payments/%s" % id, { expand: expand }))
+        Responses::Base.new(Client.get("/payments/%s" % id, params: { expand: expand }))
       end
 
       def create_refund(payload)
         Responses::Base.new(
-          Client.post("/refunds", Requests::Refund.new(payload).as_hash)
+          Client.post("/refunds", params:{}, payload: Requests::Refund.new(payload).as_hash)
         )
       end
 
@@ -48,7 +48,7 @@ module Smartpay
       end
 
       def get_refund(id, expand: '' )
-        Responses::Base.new(Client.get("/refunds/%s" % id, { expand: expand }))
+        Responses::Base.new(Client.get("/refunds/%s" % id, params: { expand: expand }))
       end
 
     end

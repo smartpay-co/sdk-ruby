@@ -61,6 +61,7 @@ RSpec.describe Smartpay::Api do
           successUrl: 'https://docs.smartpay.co/example-pages/checkout-successful',
           cancelUrl: 'https://docs.smartpay.co/example-pages/checkout-canceled',
         })
+
         expect(session.response).not_to be_empty
         expect(session.redirect_url).not_to be_empty
 
@@ -100,17 +101,24 @@ RSpec.describe Smartpay::Api do
           order: order_id,
           amount: PAYMENT_AMOUNT,
           currency: 'JPY',
+          cancel_method: 'manual',
         });
 
         payment2 = Smartpay::Api.capture({
           order: order_id,
           amount: PAYMENT_AMOUNT,
           currency: 'JPY',
+          cancel_method: 'manual',
         });
 
         expect(payment1.as_hash[:id]).not_to be_empty
         expect(payment2.as_hash[:id]).not_to be_empty
         expect(payment2.as_hash[:amount]).to eq PAYMENT_AMOUNT
+
+        retrived_payment_2 = Smartpay::Api.get_payment(payment2.as_hash[:id])
+
+        expect(retrived_payment_2.as_hash[:id]).to eq payment2.as_hash[:id]
+        expect(retrived_payment_2.as_hash[:amount]).to eq PAYMENT_AMOUNT
 
         REFUND_AMOUNT = 1
 
@@ -126,13 +134,21 @@ RSpec.describe Smartpay::Api do
 
         refund2 = Smartpay::Api.refund({
           payment: refundable_payment,
-          amount: REFUND_AMOUNT,
+          amount: REFUND_AMOUNT + 1,
           currency: 'JPY',
           reason: Smartpay::REJECT_REQUEST_BY_CUSTOMER
         });
 
+        puts refund2
+
         expect(refund1.as_hash[:amount]).to eq REFUND_AMOUNT
-        expect(refund2.as_hash[:amount]).to eq REFUND_AMOUNT
+        expect(refund2.as_hash[:amount]).to eq REFUND_AMOUNT + 1
+
+        retrived_refund2 = Smartpay::Api.get_refund(refund2.as_hash[:id])
+
+        expect(retrived_refund2.as_hash[:id]).to eq refund2.as_hash[:id]
+        expect(retrived_refund2.as_hash[:amount]).to eq REFUND_AMOUNT + 1
+
       end
     end
   end
