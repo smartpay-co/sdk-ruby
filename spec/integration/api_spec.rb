@@ -1,4 +1,4 @@
-require 'spec_helper'
+require "spec_helper"
 require "rest-client"
 
 RSpec.describe Smartpay::Api do
@@ -64,6 +64,8 @@ RSpec.describe Smartpay::Api do
 
         expect(session.response).not_to be_empty
         expect(session.redirect_url).not_to be_empty
+
+        puts session.response
 
         order_id = session.response[:order][:id]
         PAYMENT_AMOUNT = 50
@@ -138,8 +140,6 @@ RSpec.describe Smartpay::Api do
           currency: 'JPY',
           reason: Smartpay::REJECT_REQUEST_BY_CUSTOMER
         });
-
-        puts refund2
 
         expect(refund1.as_hash[:amount]).to eq REFUND_AMOUNT
         expect(refund2.as_hash[:amount]).to eq REFUND_AMOUNT + 1
