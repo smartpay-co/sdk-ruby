@@ -103,14 +103,14 @@ RSpec.describe Smartpay::Api do
           order: order_id,
           amount: PAYMENT_AMOUNT,
           currency: 'JPY',
-          cancel_method: 'manual',
+          cancel_remainder: 'manual',
         });
 
         payment2 = Smartpay::Api.capture({
           order: order_id,
           amount: PAYMENT_AMOUNT,
           currency: 'JPY',
-          cancel_method: 'manual',
+          cancel_remainder: 'manual',
         });
 
         expect(payment1.as_hash[:id]).not_to be_empty
