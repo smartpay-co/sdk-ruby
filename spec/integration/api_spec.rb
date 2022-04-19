@@ -68,7 +68,7 @@ RSpec.describe Smartpay::Api do
         puts session.response
 
         order_id = session.response[:order][:id]
-        PAYMENT_AMOUNT = 50
+        PAYMENT_AMOUNT = 150
 
         login_payload = {
           emailAddress: ENV['TEST_USERNAME'],
