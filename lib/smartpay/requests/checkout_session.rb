@@ -6,6 +6,7 @@ module Smartpay
       attr_accessor :payload
 
       REQUIREMENT_KEY_NAME = [:successUrl, :cancelUrl, :customer, :currency, :items].freeze
+      LINE_ITEM_KINDS = %w[product tax discount].freeze
       CAN_FALLBACK_KEYS = [:customer].freeze
 
       def initialize(raw_payload)
@@ -32,11 +33,8 @@ module Smartpay
           shipping_info[:feeCurrency] = payload.dig(:currency)
         end
 
-        total_amount = get_total_amount
-
-        {
+        normalized = {
           customerInfo: normalize_customer_info(payload.dig(:customerInfo) || payload.dig(:customer) || {}),
-          amount: total_amount,
           captureMethod: payload.dig(:captureMethod),
           currency: payload.dig(:currency),
           description: payload.dig(:description),
@@ -47,6 +45,10 @@ module Smartpay
           successUrl: payload.dig(:successUrl),
           cancelUrl: payload.dig(:cancelUrl),
         }
+
+        normalized[:amount] = get_total_amount(normalized)
+
+        return normalized
       end
 
       def normalize_customer_info(info)
@@ -111,29 +113,32 @@ module Smartpay
             productDescription: line_item.dig(:productDescription),
             metadata: line_item.dig(:metadata),
             productMetadata: line_item.dig(:productMetadata),
-            priceMetadata: line_item.dig(:priceMetadata)
+            priceMetadata: line_item.dig(:priceMetadata),
+            kind: LINE_ITEM_KINDS.include?(line_item.dig(:kind)) ? line_item.dig(:kind) : nil
           }
         end
       end
 
+      def get_total_amount(raw_payload = nil)
+        total_amount = raw_payload.dig(:amount) || raw_payload.dig("amount")
+        return total_amount if total_amount
 
-      def get_total_amount
-        total_amount = payload.dig(:amount) || payload.dig('amount')
+        items = raw_payload.dig(:items)
 
-        if total_amount.nil?
-          items = payload.dig(:items)
-
-          if !items.nil? && items.count > 0
-            total_amount = items.inject(0) { |sum, item| sum + (item[:amount] || item['amount'] || 0) }
-          end
-
-          shipping_fee = payload.dig(:shippingInfo, :feeAmount) ||
-                          payload.dig(:shippingInfo, 'feeAmount') ||
-                          0
-          total_amount = shipping_fee + (total_amount || 0)
+        if !items.nil? && items.count.positive?
+          total_amount = items.inject(0) { |sum, item|
+            amount = item[:amount] || item["amount"] || 0
+            amount = -amount if item[:kind] == "discount"
+            sum + amount
+          }
         end
 
-        total_amount
+        shipping_fee = raw_payload.dig(:shippingInfo, :feeAmount) ||
+                       raw_payload.dig(:shippingInfo, "feeAmount") ||
+                       0
+        total_amount += shipping_fee
+
+        return total_amount
       end
     end
   end
