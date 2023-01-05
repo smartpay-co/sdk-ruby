@@ -1,0 +1,28 @@
+on:
+  pull_request:
+  push:
+    branches:
+      - main
+name: Test
+jobs:
+  test:
+    strategy:
+      max-parallel: 1
+      matrix:
+        ruby-version: [ '2.6', '2.7', '3.0', '3.1', '3.2']
+        os: [ 'ubuntu-latest' ]
+    runs-on: ${{ matrix.os }}
+    steps:
+    - uses: actions/checkout@v3
+    - uses: ruby/setup-ruby@v1
+      with:
+        ruby-version: ${{ matrix.ruby-version }}
+        bundler-cache: true
+    - run: bundle exec rspec spec
+      env:
+        API_BASE: ${{ secrets.API_BASE }}
+        TEST_USERNAME: ${{ secrets.TEST_USERNAME }}
+        TEST_PASSWORD: ${{ secrets.TEST_PASSWORD }}
+        SMARTPAY_SECRET_KEY: ${{ secrets.SMARTPAY_SECRET_KEY }}
+        SMARTPAY_PUBLIC_KEY: ${{ secrets.SMARTPAY_PUBLIC_KEY }}
+        SMARTPAY_API_PREFIX: ${{ secrets.SMARTPAY_API_PREFIX }}
