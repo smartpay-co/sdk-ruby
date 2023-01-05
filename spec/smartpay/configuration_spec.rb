@@ -25,7 +25,10 @@ RSpec.describe Smartpay::Configuration do
     let(:config) { Smartpay::Configuration.new }
 
     context 'when set api_url to nil' do
-      before { config.api_url = nil }
+      before do
+        config.api_url = nil
+        ENV.delete('SMARTPAY_API_PREFIX')
+      end
 
       it 'fallbacks to default setting' do
         expect(config.api_url).to eq(Smartpay::Configuration::DEFAULT_API_URL)
