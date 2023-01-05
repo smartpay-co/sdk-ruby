@@ -9,19 +9,6 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
 
       it { expect { subject.send(:check_requirement!) }.to raise_error(Smartpay::Errors::InvalidRequestPayloadError) }
     end
-
-    context "when the raw_payload is not contained customerInfo" do
-      let(:request) do
-        {
-          successUrl: "https://docs.smartpay.co/example-pages/checkout-successful",
-          cancelUrl: "https://docs.smartpay.co/example-pages/checkout-canceled",
-          currency: "JPY",
-          items: []
-        }
-      end
-
-      it { expect { subject.send(:check_requirement!) }.not_to raise_error() }
-    end
   end
 
   describe "#normalize_payload" do
@@ -35,7 +22,7 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
           currency: "JPY",
           quantity: 1
         }],
-        customer: {
+        customerInfo: {
           accountAge: 20,
           email: "merchant-support@smartpay.co",
           firstName: "田中",
@@ -54,7 +41,7 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
           dateOfBirth: "1985-06-30",
           gender: "male"
         },
-        shipping: {
+        shippingInfo: {
           line1: "line1",
           locality: "locality",
           postalCode: "123",

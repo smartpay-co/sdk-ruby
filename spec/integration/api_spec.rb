@@ -34,7 +34,7 @@ RSpec.describe Smartpay::Api do
               kind: "tax"
             }
           ],
-          customer: {
+          customerInfo: {
             accountAge: 20,
             email: "merchant-support@smartpay.co",
             firstName: "田中",
@@ -174,7 +174,7 @@ RSpec.describe Smartpay::Api do
               quantity: 1
             },
           ],
-          customer: {
+          customerInfo: {
             accountAge: 20,
             email: "merchant-support@smartpay.co",
             firstName: "田中",

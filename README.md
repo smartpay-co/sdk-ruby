@@ -55,35 +55,66 @@ You can find the description and requirement for request payload in [API Documen
 
 ```ruby
 payloaad = {
-  "customerInfo": {
-    "emailAddress": "success@smartpay.co",
-  },
-  "orderData": {
-    "amount": 250,
-    "currency": "JPY",
-    "shippingInfo": {
-      "address": {
-        "line1": "line1",
-        "locality": "locality",
-        "postalCode": "123",
-        "country": "JP"
-      },
-    },
-    "lineItemData": [{
-      "priceData": {
-        "productData": {
-          "name": "レブロン 18 LOW",
-        },
-        "amount": 250,
-        "currency": "JPY",
-      },
-      "quantity": 1
-    }]
-  },
-  "reference": "order_ref_1234567",
-  "successUrl": "https://docs.smartpay.co/example-pages/checkout-successful",
-  "cancelUrl": "https://docs.smartpay.co/example-pages/checkout-canceled"
-}
+          currency: "JPY",
+          items: [
+            {
+              name: "オリジナルス STAN SMITH",
+              amount: 1000,
+              currency: "JPY",
+              quantity: 1
+            },
+            {
+              currency: "JPY",
+              amount: 500,
+              name: "Merchant special discount",
+              kind: "discount"
+            },
+            {
+              currency: "JPY",
+              amount: 100,
+              name: "explicit taxes",
+              kind: "tax"
+            }
+          ],
+          customerInfo: {
+            accountAge: 20,
+            email: "merchant-support@smartpay.co",
+            firstName: "田中",
+            lastName: "太郎",
+            firstNameKana: "たなか",
+            lastNameKana: "たろう",
+            address: {
+              line1: "北青山 3-6-7",
+              line2: "青山パラシオタワー 11階",
+              subLocality: "",
+              locality: "港区",
+              administrativeArea: "東京都",
+              postalCode: "107-0061",
+              country: "JP"
+            },
+            dateOfBirth: "1985-06-30",
+            gender: "male"
+          },
+          shippingInfo: {
+            address: {
+              line1: "北青山 3-6-7",
+              line2: "青山パラシオタワー 11階",
+              subLocality: "",
+              locality: "港区",
+              administrativeArea: "東京都",
+              postalCode: "107-0061",
+              country: "JP"
+            },
+            feeAmount: 100,
+            feeCurrency: "JPY"
+          },
+
+          captureMethod: "manual",
+
+          reference: "order_ref_1234567",
+          successUrl: "https://docs.smartpay.co/example-pages/checkout-successful",
+          cancelUrl: "https://docs.smartpay.co/example-pages/checkout-canceled"
+        }
 ```
 
 Create a checkout session by using `Smartpay::Api.create_checkout_session` with your request payload.

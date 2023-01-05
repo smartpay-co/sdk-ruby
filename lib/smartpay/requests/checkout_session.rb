@@ -5,9 +5,8 @@ module Smartpay
     class CheckoutSession
       attr_accessor :payload
 
-      REQUIREMENT_KEY_NAME = [:successUrl, :cancelUrl, :customer, :currency, :items].freeze
+      REQUIREMENT_KEY_NAME = [:successUrl, :cancelUrl, :customerInfo, :shippingInfo, :currency, :items].freeze
       LINE_ITEM_KINDS = %w[product tax discount].freeze
-      CAN_FALLBACK_KEYS = [:customer].freeze
 
       def initialize(raw_payload)
         @payload = raw_payload.transform_keys(&:to_sym)
@@ -22,73 +21,74 @@ module Smartpay
 
       def check_requirement!
         REQUIREMENT_KEY_NAME.each do |key_name|
-          next if CAN_FALLBACK_KEYS.include?(key_name)
           raise Errors::InvalidRequestPayloadError, key_name unless payload.include?(key_name)
         end
       end
 
       def normalize_payload
-        shipping_info = payload.dig(:shippingInfo) || normalize_shipping(payload.dig(:shipping))
-        if shipping_info && shipping_info[:feeCurrency].nil? && !(shipping_info[:feeAmount].nil?)
-          shipping_info[:feeCurrency] = payload.dig(:currency)
-        end
-
         normalized = {
-          customerInfo: normalize_customer_info(payload.dig(:customerInfo) || payload.dig(:customer) || {}),
-          captureMethod: payload.dig(:captureMethod),
-          currency: payload.dig(:currency),
-          description: payload.dig(:description),
-          shippingInfo: shipping_info,
-          items: normalize_items(payload.dig(:items)),
-          metadata: payload.dig(:metadata) || {},
-          reference: payload.dig(:reference),
-          successUrl: payload.dig(:successUrl),
-          cancelUrl: payload.dig(:cancelUrl),
+          customerInfo: normalize_customer_info(payload[:customerInfo] || {}),
+          captureMethod: payload[:captureMethod],
+          currency: payload[:currency],
+          description: payload[:description],
+          shippingInfo: normalize_shipping(payload[:shippingInfo], payload[:currency]),
+          items: normalize_items(payload[:items]),
+          metadata: payload[:metadata] || {},
+          reference: payload[:reference],
+          successUrl: payload[:successUrl],
+          cancelUrl: payload[:cancelUrl]
         }
 
         normalized[:amount] = get_total_amount(normalized)
 
-        return normalized
+        normalized
       end
 
       def normalize_customer_info(info)
         return if info.nil?
+
         customer = info.transform_keys(&:to_sym)
         {
-          accountAge: customer.dig(:accountAge),
-          emailAddress: customer.dig(:emailAddress) || customer.dig(:email),
-          firstName: customer.dig(:firstName),
-          lastName: customer.dig(:lastName),
-          firstNameKana: customer.dig(:firstNameKana),
-          lastNameKana: customer.dig(:lastNameKana),
-          address: customer.dig(:address),
-          phoneNumber: customer.dig(:phoneNumber) || customer.dig(:phone),
-          dateOfBirth: customer.dig(:dateOfBirth),
-          legalGender: customer.dig(:legalGender) || customer.dig(:gender),
-          reference: customer.dig(:reference)
+          accountAge: customer[:accountAge],
+          emailAddress: customer[:emailAddress] || customer[:email],
+          firstName: customer[:firstName],
+          lastName: customer[:lastName],
+          firstNameKana: customer[:firstNameKana],
+          lastNameKana: customer[:lastNameKana],
+          address: customer[:address],
+          phoneNumber: customer[:phoneNumber] || customer[:phone],
+          dateOfBirth: customer[:dateOfBirth],
+          legalGender: customer[:legalGender] || customer[:gender],
+          reference: customer[:reference]
         }
       end
 
-      def normalize_shipping(shipping)
+      def normalize_shipping(shipping, fallback_currency = nil)
         return if shipping.nil?
-        shipping= shipping.transform_keys(&:to_sym)
-        {
-          address: shipping.dig(:address) || {
-            line1: shipping.dig(:line1),
-            line2: shipping.dig(:line2),
-            line3: shipping.dig(:line3),
-            line4: shipping.dig(:line4),
-            line5: shipping.dig(:line5),
-            subLocality: shipping.dig(:subLocality),
-            locality: shipping.dig(:locality),
-            administrativeArea: shipping.dig(:administrativeArea),
-            postalCode: shipping.dig(:postalCode),
-            country: shipping.dig(:country),
+
+        shipping = shipping.transform_keys(&:to_sym)
+        normalized_shipping = {
+          address: shipping[:address] || {
+            line1: shipping[:line1],
+            line2: shipping[:line2],
+            line3: shipping[:line3],
+            line4: shipping[:line4],
+            line5: shipping[:line5],
+            subLocality: shipping[:subLocality],
+            locality: shipping[:locality],
+            administrativeArea: shipping[:administrativeArea],
+            postalCode: shipping[:postalCode],
+            country: shipping[:country]
           },
-          addressType: shipping.dig(:addressType),
-          feeAmount: shipping.dig(:feeAmount),
-          feeCurrency: shipping.dig(:feeCurrency),
+          addressType: shipping[:addressType],
+          feeAmount: shipping[:feeAmount],
+          feeCurrency: shipping[:feeCurrency]
         }
+
+        if normalized_shipping && normalized_shipping[:feeCurrency].nil? && !(normalized_shipping[:feeAmount].nil?)
+          normalized_shipping[:feeCurrency] = fallback_currency
+        end
+        normalized_shipping
       end
 
       def normalize_items(data)
@@ -97,33 +97,33 @@ module Smartpay
         data.map do |item|
           line_item = item.transform_keys(&:to_sym)
           {
-            quantity: line_item.dig(:quantity),
-            label: line_item.dig(:label),
-            name: line_item.dig(:name),
-            amount: line_item.dig(:amount),
-            currency: line_item.dig(:currency),
-            brand: line_item.dig(:brand),
-            categories: line_item.dig(:categories),
-            gtin: line_item.dig(:gtin),
-            images: line_item.dig(:images),
-            reference: line_item.dig(:reference),
-            url: line_item.dig(:url),
-            description: line_item.dig(:description),
-            priceDescription: line_item.dig(:priceDescription),
-            productDescription: line_item.dig(:productDescription),
-            metadata: line_item.dig(:metadata),
-            productMetadata: line_item.dig(:productMetadata),
-            priceMetadata: line_item.dig(:priceMetadata),
-            kind: LINE_ITEM_KINDS.include?(line_item.dig(:kind)) ? line_item.dig(:kind) : nil
+            quantity: line_item[:quantity],
+            label: line_item[:label],
+            name: line_item[:name],
+            amount: line_item[:amount],
+            currency: line_item[:currency],
+            brand: line_item[:brand],
+            categories: line_item[:categories],
+            gtin: line_item[:gtin],
+            images: line_item[:images],
+            reference: line_item[:reference],
+            url: line_item[:url],
+            description: line_item[:description],
+            priceDescription: line_item[:priceDescription],
+            productDescription: line_item[:productDescription],
+            metadata: line_item[:metadata],
+            productMetadata: line_item[:productMetadata],
+            priceMetadata: line_item[:priceMetadata],
+            kind: LINE_ITEM_KINDS.include?(line_item[:kind]) ? line_item[:kind] : nil
           }
         end
       end
 
       def get_total_amount(raw_payload = nil)
-        total_amount = raw_payload.dig(:amount) || raw_payload.dig("amount")
+        total_amount = raw_payload[:amount] || raw_payload["amount"]
         return total_amount if total_amount
 
-        items = raw_payload.dig(:items)
+        items = raw_payload[:items]
 
         if !items.nil? && items.count.positive?
           total_amount = items.inject(0) { |sum, item|
@@ -138,7 +138,7 @@ module Smartpay
                        0
         total_amount += shipping_fee
 
-        return total_amount
+        total_amount
       end
     end
   end
