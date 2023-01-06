@@ -4,8 +4,22 @@ module Smartpay
   class Api
     class << self
       def create_checkout_session(payload)
+        return create_checkout_session_for_token(payload) if payload[:mode] == "token"
+
         Responses::CheckoutSession.new(
           Client.post("/checkout-sessions", params: {}, payload: Requests::CheckoutSession.new(payload).as_hash)
+        )
+      end
+
+      def create_checkout_session_for_token(payload)
+        Responses::CheckoutSession.new(
+          Client.post("/checkout-sessions", params: {}, payload: Requests::CheckoutSessionForToken.new(payload).as_hash)
+        )
+      end
+
+      def create_order(payload)
+        Responses::Base.new(
+          Client.post("/orders", params:{}, payload: Requests::Order.new(payload).as_hash)
         )
       end
 

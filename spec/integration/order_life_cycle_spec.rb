@@ -1,4 +1,3 @@
-require "spec_helper"
 require "rest-client"
 
 RSpec.describe Smartpay::Api do
