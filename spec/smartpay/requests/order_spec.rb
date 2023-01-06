@@ -64,25 +64,25 @@ RSpec.describe Smartpay::Requests::Order do
           captureMethod: nil,
           currency: "JPY",
           items: [{
-                    quantity: 1,
-                    kind: nil,
-                    label: nil,
-                    description: nil,
-                    productDescription: nil,
-                    priceDescription: nil,
-                    metadata: nil,
-                    productMetadata: nil,
-                    priceMetadata: nil,
-                    amount: 250,
-                    currency: "JPY",
-                    brand: nil,
-                    categories: nil,
-                    gtin: nil,
-                    images: nil,
-                    name: "オリジナルス STAN SMITH",
-                    reference: nil,
-                    url: nil
-                  }],
+            quantity: 1,
+            kind: nil,
+            label: nil,
+            description: nil,
+            productDescription: nil,
+            priceDescription: nil,
+            metadata: nil,
+            productMetadata: nil,
+            priceMetadata: nil,
+            amount: 250,
+            currency: "JPY",
+            brand: nil,
+            categories: nil,
+            gtin: nil,
+            images: nil,
+            name: "オリジナルス STAN SMITH",
+            reference: nil,
+            url: nil
+          }],
           shippingInfo: {
             address: {
               administrativeArea: nil,
@@ -129,9 +129,10 @@ RSpec.describe Smartpay::Requests::Order do
 
     it "fixes the amount after the shippingInfo field name got fixed" do
       request[:amount] = nil
-      subject = Smartpay::Requests::CheckoutSession.new(request)
+      subject = Smartpay::Requests::Order.new(request)
 
       expect(subject.send(:normalize_payload)).to eq({
+        token: "token_abc",
         amount: 350,
         captureMethod: nil,
         currency: "JPY",
@@ -172,12 +173,8 @@ RSpec.describe Smartpay::Requests::Order do
           feeAmount: 100,
           feeCurrency: "JPY"
         },
-        description: nil,
-        locale: nil,
         metadata: {},
         reference: "order_ref_1234567",
-        successUrl: "https://docs.smartpay.co/example-pages/checkout-successful",
-        cancelUrl: "https://docs.smartpay.co/example-pages/checkout-canceled",
         customerInfo: {
           accountAge: 20,
           address: {
@@ -198,7 +195,7 @@ RSpec.describe Smartpay::Requests::Order do
           legalGender: "male",
           phoneNumber: nil,
           reference: nil
-        },
+        }
       })
     end
   end
@@ -434,7 +431,7 @@ RSpec.describe Smartpay::Requests::Order do
             name: "abc",
             kind: "tax"
           }
-          subject = Smartpay::Requests::CheckoutSession.new(request)
+          subject = Smartpay::Requests::Order.new(request)
           expect(subject.send(:get_total_amount, request)).to eq(1200)
         end
 
@@ -445,7 +442,7 @@ RSpec.describe Smartpay::Requests::Order do
             name: "abc",
             kind: "discount"
           }
-          subject = Smartpay::Requests::CheckoutSession.new(request)
+          subject = Smartpay::Requests::Order.new(request)
           expect(subject.send(:get_total_amount, request)).to eq(1000)
         end
       end
