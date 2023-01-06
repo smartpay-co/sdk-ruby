@@ -40,7 +40,27 @@ module Smartpay
                                                 timeout: timeout,
                                                 payload: request_payload.to_json)
         end
-        JSON.parse(response.body, symbolize_names: true)
+        begin
+          JSON.parse(response.body, symbolize_names: true)
+        rescue JSON::ParserError
+          response
+        end
+      end
+
+      def delete(path, params: {})
+        request_params = default_params.merge(params).merge({'Idempotency-Key': nonce})
+        idempotency_key = nonce
+        response = with_retries(:max_tries => 1, :rescue => [RestClient::InternalServerError, RestClient::BadGateway, RestClient::ServiceUnavailable, RestClient::GatewayTimeout]) do
+          RestClient::Request.execute(method: :delete, url: api_url(path),
+                                                params: request_params,
+                                                headers: headers.merge({Idempotency_Key: idempotency_key}).merge(params: request_params),
+                                                timeout: timeout)
+        end
+        begin
+          JSON.parse(response.body, symbolize_names: true)
+        rescue JSON::ParserError
+          response
+        end
       end
 
       private

@@ -65,6 +65,25 @@ module Smartpay
         Responses::Base.new(Client.get("/refunds/%s" % id, params: { expand: expand }))
       end
 
+      def get_tokens(page_token: nil, max_results: nil)
+        Responses::Base.new(Client.get("/tokens", params: { pageToken: page_token, maxResults: max_results }))
+      end
+
+      def get_token(id)
+        Responses::Base.new(Client.get("/tokens/%s" % id))
+      end
+
+      def enable_token(id)
+        Responses::Base.new(Client.put("/tokens/%s/enable" % id))
+      end
+
+      def disable_token(id)
+        Responses::Base.new(Client.put("/tokens/%s/disable" % id))
+      end
+
+      def delete_token(id)
+        Responses::Base.new(Client.delete("/tokens/%s" % id))
+      end
     end
   end
 end

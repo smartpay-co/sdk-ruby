@@ -16,6 +16,10 @@ module Smartpay
       def as_json
         @response.to_json
       end
+
+      def http_code
+        @response.code
+      end
     end
   end
 end

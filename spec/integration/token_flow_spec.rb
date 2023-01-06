@@ -139,6 +139,12 @@ RSpec.describe Smartpay::Api do
         expect(order_resp.response).not_to be_empty
         expect(order_resp.as_hash[:object]).to eq "order"
         expect(order_resp.as_hash[:id]).not_to be_empty
+
+        expect(Smartpay::Api.get_token(token_id).as_hash[:id]).to eq token_id
+        expect(Smartpay::Api.get_tokens(max_results: 3).as_hash[:maxResults]).to be 3
+        expect(Smartpay::Api.disable_token(token_id).http_code).to eq 200
+        expect(Smartpay::Api.enable_token(token_id).http_code).to eq 200
+        expect(Smartpay::Api.delete_token(token_id).http_code).to eq 204
       end
 
 
