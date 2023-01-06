@@ -7,7 +7,7 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
     context "when the raw_payload is not contained successUrl" do
       let(:request) { {} }
 
-      it { expect { subject.send(:check_requirement!) }.to raise_error(Smartpay::Errors::InvalidRequestPayloadError) }
+      it { expect { subject.send(:check_requirement!, subject.class::REQUIREMENT_KEY_NAME) }.to raise_error(Smartpay::Errors::InvalidRequestPayloadError) }
     end
   end
 
@@ -98,6 +98,7 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
           feeCurrency: "JPY"
         },
         description: nil,
+        locale: nil,
         metadata: {},
         reference: "order_ref_1234567",
         successUrl: "https://docs.smartpay.co/example-pages/checkout-successful",
@@ -172,6 +173,7 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
           feeCurrency: "JPY"
         },
         description: nil,
+        locale: nil,
         metadata: {},
         reference: "order_ref_1234567",
         successUrl: "https://docs.smartpay.co/example-pages/checkout-successful",

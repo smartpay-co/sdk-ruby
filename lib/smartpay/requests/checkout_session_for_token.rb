@@ -5,17 +5,18 @@ require_relative "normalizer"
 
 module Smartpay
   module Requests
-    # Request Object to create a CheckoutSession for order
-    class CheckoutSession
+    # Request Object to create a CheckoutSession for token
+    class CheckoutSessionForToken
       include Validator
       include Normalizer
 
       attr_accessor :payload
 
-      REQUIREMENT_KEY_NAME = %i[successUrl cancelUrl customerInfo shippingInfo currency items].freeze
+      REQUIREMENT_KEY_NAME = %i[successUrl cancelUrl customerInfo mode].freeze
 
       def initialize(raw_payload)
         @payload = raw_payload.transform_keys(&:to_sym)
+        raise Errors::InvalidRequestPayloadError, "mode" unless payload[:mode] == "token"
       end
 
       def as_hash
@@ -26,25 +27,16 @@ module Smartpay
       private
 
       def normalize_payload
-        normalized = {
+        {
+          mode: payload[:mode],
           customerInfo: normalize_customer_info(payload[:customerInfo] || {}),
-          captureMethod: payload[:captureMethod],
-          currency: payload[:currency],
-          description: payload[:description],
-          shippingInfo: normalize_shipping(payload[:shippingInfo], payload[:currency]),
-          items: normalize_items(payload[:items]),
-          locale: payload[:locale],
           metadata: payload[:metadata] || {},
+          locale: payload[:locale],
           reference: payload[:reference],
           successUrl: payload[:successUrl],
           cancelUrl: payload[:cancelUrl]
         }
-
-        normalized[:amount] = get_total_amount(normalized)
-
-        normalized
       end
-
 
     end
   end
