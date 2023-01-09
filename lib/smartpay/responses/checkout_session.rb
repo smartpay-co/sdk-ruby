@@ -12,7 +12,7 @@ module Smartpay
 
           return "#{url}#{qs}"
         end
-        
+
         url
       end
 

@@ -5,8 +5,13 @@ module Smartpay
     class Base
       attr_reader :response
 
-      def initialize(response)
-        @response = response
+      def initialize(raw_response)
+        @raw_response = raw_response
+        @response = begin
+          JSON.parse(@raw_response.body, symbolize_names: true)
+        rescue JSON::ParserError
+          { body: @raw_response.body }
+        end if @raw_response
       end
 
       def as_hash
@@ -18,7 +23,7 @@ module Smartpay
       end
 
       def http_code
-        @response.code
+        @raw_response.code
       end
     end
   end
