@@ -1,10 +1,10 @@
 require "spec_helper"
 
-RSpec.describe Smartpay::Requests::CheckoutSession do
-  subject { Smartpay::Requests::CheckoutSession.new(request) }
+RSpec.describe Smartpay::Requests::Order do
+  subject { Smartpay::Requests::Order.new(request) }
 
   describe "#check_requirement!" do
-    context "when the raw_payload is not contained successUrl" do
+    context "when the raw_payload is not contained token" do
       let(:request) { {} }
 
       it { expect { subject.send(:check_requirement!, subject.class::REQUIREMENT_KEY_NAME) }.to raise_error(Smartpay::Errors::InvalidRequestPayloadError) }
@@ -14,6 +14,7 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
   describe "#normalize_payload" do
     let(:request) do
       {
+        token: "token_abc",
         amount: 350,
         currency: "JPY",
         items: [{
@@ -56,150 +57,148 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
     end
 
     it "fixes the shippingInfo field name" do
-      expect(subject.send(:normalize_payload)).to eq({
-        amount: 350,
-        captureMethod: nil,
-        currency: "JPY",
-        items: [{
-          quantity: 1,
-          kind: nil,
-          label: nil,
-          description: nil,
-          productDescription: nil,
-          priceDescription: nil,
-          metadata: nil,
-          productMetadata: nil,
-          priceMetadata: nil,
-          amount: 250,
+      expect(subject.send(:normalize_payload)).to eq(
+        {
+          token: "token_abc",
+          amount: 350,
+          captureMethod: nil,
           currency: "JPY",
-          brand: nil,
-          categories: nil,
-          gtin: nil,
-          images: nil,
-          name: "オリジナルス STAN SMITH",
-          reference: nil,
-          url: nil
-        }],
-        shippingInfo: {
-          address: {
-            administrativeArea: nil,
-            country: "JP",
-            line1: "line1",
-            line2: nil,
-            line3: nil,
-            line4: nil,
-            line5: nil,
-            locality: "locality",
-            postalCode: "123",
-            subLocality: nil
+          items: [{
+            quantity: 1,
+            kind: nil,
+            label: nil,
+            description: nil,
+            productDescription: nil,
+            priceDescription: nil,
+            metadata: nil,
+            productMetadata: nil,
+            priceMetadata: nil,
+            amount: 250,
+            currency: "JPY",
+            brand: nil,
+            categories: nil,
+            gtin: nil,
+            images: nil,
+            name: "オリジナルス STAN SMITH",
+            reference: nil,
+            url: nil
+          }],
+          shippingInfo: {
+            address: {
+              administrativeArea: nil,
+              country: "JP",
+              line1: "line1",
+              line2: nil,
+              line3: nil,
+              line4: nil,
+              line5: nil,
+              locality: "locality",
+              postalCode: "123",
+              subLocality: nil
+            },
+            addressType: nil,
+            feeAmount: 100,
+            feeCurrency: "JPY"
           },
-          addressType: nil,
-          feeAmount: 100,
-          feeCurrency: "JPY"
-        },
-        description: nil,
-        locale: nil,
-        metadata: {},
-        reference: "order_ref_1234567",
-        successUrl: "https://docs.smartpay.co/example-pages/checkout-successful",
-        cancelUrl: "https://docs.smartpay.co/example-pages/checkout-canceled",
-        customerInfo: {
-          accountAge: 20,
-          address: {
-            administrativeArea: "東京都",
-            country: "JP",
-            line1: "3-6-7",
-            line2: "青山パラシオタワー 11階",
-            locality: "港区北青山",
-            postalCode: "107-0061",
-            subLocality: ""
-          },
-          dateOfBirth: "1985-06-30",
-          emailAddress: "merchant-support@smartpay.co",
-          firstName: "田中",
-          firstNameKana: "たなか",
-          lastName: "太郎",
-          lastNameKana: "たろう",
-          legalGender: "male",
-          phoneNumber: nil,
-          reference: nil
-        },
-      })
+          metadata: {},
+          reference: "order_ref_1234567",
+          customerInfo: {
+            accountAge: 20,
+            address: {
+              administrativeArea: "東京都",
+              country: "JP",
+              line1: "3-6-7",
+              line2: "青山パラシオタワー 11階",
+              locality: "港区北青山",
+              postalCode: "107-0061",
+              subLocality: ""
+            },
+            dateOfBirth: "1985-06-30",
+            emailAddress: "merchant-support@smartpay.co",
+            firstName: "田中",
+            firstNameKana: "たなか",
+            lastName: "太郎",
+            lastNameKana: "たろう",
+            legalGender: "male",
+            phoneNumber: nil,
+            reference: nil
+          }
+        }
+      )
     end
 
     it "fixes the amount after the shippingInfo field name got fixed" do
       request[:amount] = nil
-      subject = Smartpay::Requests::CheckoutSession.new(request)
+      subject = Smartpay::Requests::Order.new(request)
 
-      expect(subject.send(:normalize_payload)).to eq({
-        amount: 350,
-        captureMethod: nil,
-        currency: "JPY",
-        items: [{
-          quantity: 1,
-          kind: nil,
-          label: nil,
-          description: nil,
-          productDescription: nil,
-          priceDescription: nil,
-          metadata: nil,
-          productMetadata: nil,
-          priceMetadata: nil,
-          amount: 250,
+      expect(subject.send(:normalize_payload)).to eq(
+        {
+          token: "token_abc",
+          amount: 350,
+          captureMethod: nil,
           currency: "JPY",
-          brand: nil,
-          categories: nil,
-          gtin: nil,
-          images: nil,
-          name: "オリジナルス STAN SMITH",
-          reference: nil,
-          url: nil
-        }],
-        shippingInfo: {
-          address: {
-            administrativeArea: nil,
-            country: "JP",
-            line1: "line1",
-            line2: nil,
-            line3: nil,
-            line4: nil,
-            line5: nil,
-            locality: "locality",
-            postalCode: "123",
-            subLocality: nil
+          items: [{
+            quantity: 1,
+            kind: nil,
+            label: nil,
+            description: nil,
+            productDescription: nil,
+            priceDescription: nil,
+            metadata: nil,
+            productMetadata: nil,
+            priceMetadata: nil,
+            amount: 250,
+            currency: "JPY",
+            brand: nil,
+            categories: nil,
+            gtin: nil,
+            images: nil,
+            name: "オリジナルス STAN SMITH",
+            reference: nil,
+            url: nil
+          }],
+          shippingInfo: {
+            address: {
+              administrativeArea: nil,
+              country: "JP",
+              line1: "line1",
+              line2: nil,
+              line3: nil,
+              line4: nil,
+              line5: nil,
+              locality: "locality",
+              postalCode: "123",
+              subLocality: nil
+            },
+            addressType: nil,
+            feeAmount: 100,
+            feeCurrency: "JPY"
           },
-          addressType: nil,
-          feeAmount: 100,
-          feeCurrency: "JPY"
-        },
-        description: nil,
-        locale: nil,
-        metadata: {},
-        reference: "order_ref_1234567",
-        successUrl: "https://docs.smartpay.co/example-pages/checkout-successful",
-        cancelUrl: "https://docs.smartpay.co/example-pages/checkout-canceled",
-        customerInfo: {
-          accountAge: 20,
-          address: {
-            administrativeArea: "東京都",
-            country: "JP",
-            line1: "3-6-7",
-            line2: "青山パラシオタワー 11階",
-            locality: "港区北青山",
-            postalCode: "107-0061",
-            subLocality: ""
-          },
-          dateOfBirth: "1985-06-30",
-          emailAddress: "merchant-support@smartpay.co",
-          firstName: "田中",
-          firstNameKana: "たなか",
-          lastName: "太郎",
-          lastNameKana: "たろう",
-          legalGender: "male",
-          phoneNumber: nil,
-          reference: nil
-        },
-      })
+          metadata: {},
+          reference: "order_ref_1234567",
+          customerInfo: {
+            accountAge: 20,
+            address: {
+              administrativeArea: "東京都",
+              country: "JP",
+              line1: "3-6-7",
+              line2: "青山パラシオタワー 11階",
+              locality: "港区北青山",
+              postalCode: "107-0061",
+              subLocality: ""
+            },
+            dateOfBirth: "1985-06-30",
+            emailAddress: "merchant-support@smartpay.co",
+            firstName: "田中",
+            firstNameKana: "たなか",
+            lastName: "太郎",
+            lastNameKana: "たろう",
+            legalGender: "male",
+            phoneNumber: nil,
+            reference: nil
+          }
+        }
+      )
     end
   end
 
@@ -212,19 +211,21 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
 
     context "when argument is not nil" do
       it do
-        expect(subject.send(:normalize_customer_info, { email: "success@smartpay.co" })).to eq({
-          accountAge: nil,
-          address: nil,
-          dateOfBirth: nil,
-          emailAddress: "success@smartpay.co",
-          firstName: nil,
-          firstNameKana: nil,
-          lastName: nil,
-          lastNameKana: nil,
-          legalGender: nil,
-          phoneNumber: nil,
-          reference: nil
-        })
+        expect(subject.send(:normalize_customer_info, { email: "success@smartpay.co" })).to eq(
+          {
+            accountAge: nil,
+            address: nil,
+            dateOfBirth: nil,
+            emailAddress: "success@smartpay.co",
+            firstName: nil,
+            firstNameKana: nil,
+            lastName: nil,
+            lastNameKana: nil,
+            legalGender: nil,
+            phoneNumber: nil,
+            reference: nil
+          }
+        )
       end
     end
   end
@@ -238,23 +239,26 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
 
     context "when argument is not nil" do
       it do
-        expect(subject.send(:normalize_shipping, { line1: "line1" })).to eq({
-          address: {
-            administrativeArea: nil,
-            country: nil,
-            line1: "line1",
-            line2: nil,
-            line3: nil,
-            line4: nil,
-            line5: nil,
-            locality: nil,
-            postalCode: nil,
-            subLocality: nil
-          },
-          addressType: nil,
-          feeAmount: nil,
-          feeCurrency: nil
-        })
+        expect(subject.send(:normalize_shipping, { line1: "line1" })).to eq(
+          {
+            address:
+              {
+                administrativeArea: nil,
+                country: nil,
+                line1: "line1",
+                line2: nil,
+                line3: nil,
+                line4: nil,
+                line5: nil,
+                locality: nil,
+                postalCode: nil,
+                subLocality: nil
+              },
+            addressType: nil,
+            feeAmount: nil,
+            feeCurrency: nil
+          }
+        )
       end
     end
   end
@@ -434,7 +438,7 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
             name: "abc",
             kind: "tax"
           }
-          subject = Smartpay::Requests::CheckoutSession.new(request)
+          subject = Smartpay::Requests::Order.new(request)
           expect(subject.send(:get_total_amount, request)).to eq(1200)
         end
 
@@ -445,7 +449,7 @@ RSpec.describe Smartpay::Requests::CheckoutSession do
             name: "abc",
             kind: "discount"
           }
-          subject = Smartpay::Requests::CheckoutSession.new(request)
+          subject = Smartpay::Requests::Order.new(request)
           expect(subject.send(:get_total_amount, request)).to eq(1000)
         end
       end

@@ -6,13 +6,13 @@ require_relative "normalizer"
 module Smartpay
   module Requests
     # Request Object to create a CheckoutSession for order
-    class CheckoutSession
+    class Order
       include Validator
       include Normalizer
 
       attr_accessor :payload
 
-      REQUIREMENT_KEY_NAME = %i[successUrl cancelUrl customerInfo shippingInfo currency items].freeze
+      REQUIREMENT_KEY_NAME = %i[token customerInfo shippingInfo currency items].freeze
 
       def initialize(raw_payload)
         @payload = raw_payload.transform_keys(&:to_sym)
@@ -27,17 +27,14 @@ module Smartpay
 
       def normalize_payload
         normalized = {
+          token: payload[:token],
           customerInfo: normalize_customer_info(payload[:customerInfo] || {}),
           captureMethod: payload[:captureMethod],
           currency: payload[:currency],
-          description: payload[:description],
           shippingInfo: normalize_shipping(payload[:shippingInfo], payload[:currency]),
           items: normalize_items(payload[:items]),
-          locale: payload[:locale],
           metadata: payload[:metadata] || {},
-          reference: payload[:reference],
-          successUrl: payload[:successUrl],
-          cancelUrl: payload[:cancelUrl]
+          reference: payload[:reference]
         }
 
         normalized[:amount] = get_total_amount(normalized)

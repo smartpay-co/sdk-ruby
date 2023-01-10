@@ -1,4 +1,3 @@
-require "spec_helper"
 require "rest-client"
 
 RSpec.describe Smartpay::Api do
@@ -34,7 +33,7 @@ RSpec.describe Smartpay::Api do
               kind: "tax"
             }
           ],
-          customer: {
+          customerInfo: {
             accountAge: 20,
             email: "merchant-support@smartpay.co",
             firstName: "田中",
@@ -174,7 +173,7 @@ RSpec.describe Smartpay::Api do
               quantity: 1
             },
           ],
-          customer: {
+          customerInfo: {
             accountAge: 20,
             email: "merchant-support@smartpay.co",
             firstName: "田中",
@@ -260,7 +259,7 @@ RSpec.describe Smartpay::Api do
     context "with valid params" do
       it do
         orders = Smartpay::Api.get_orders(
-          max_results: 3,
+          max_results: 3
         )
         expect(orders.response).not_to be_empty
         expect(orders.response[:maxResults]).to be 3

@@ -4,8 +4,22 @@ module Smartpay
   class Api
     class << self
       def create_checkout_session(payload)
+        return create_checkout_session_for_token(payload) if payload[:mode] == "token"
+
         Responses::CheckoutSession.new(
           Client.post("/checkout-sessions", params: {}, payload: Requests::CheckoutSession.new(payload).as_hash)
+        )
+      end
+
+      def create_checkout_session_for_token(payload)
+        Responses::CheckoutSession.new(
+          Client.post("/checkout-sessions", params: {}, payload: Requests::CheckoutSessionForToken.new(payload).as_hash)
+        )
+      end
+
+      def create_order(payload)
+        Responses::Base.new(
+          Client.post("/orders", params:{}, payload: Requests::Order.new(payload).as_hash)
         )
       end
 
@@ -51,6 +65,25 @@ module Smartpay
         Responses::Base.new(Client.get("/refunds/%s" % id, params: { expand: expand }))
       end
 
+      def get_tokens(page_token: nil, max_results: nil)
+        Responses::Base.new(Client.get("/tokens", params: { pageToken: page_token, maxResults: max_results }))
+      end
+
+      def get_token(id)
+        Responses::Base.new(Client.get("/tokens/%s" % id))
+      end
+
+      def enable_token(id)
+        Responses::Base.new(Client.put("/tokens/%s/enable" % id))
+      end
+
+      def disable_token(id)
+        Responses::Base.new(Client.put("/tokens/%s/disable" % id))
+      end
+
+      def delete_token(id)
+        Responses::Base.new(Client.delete("/tokens/%s" % id))
+      end
     end
   end
 end

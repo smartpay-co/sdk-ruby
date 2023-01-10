@@ -3,7 +3,7 @@ require 'spec_helper'
 RSpec.describe Smartpay::Responses::CheckoutSession do
   subject { Smartpay::Responses::CheckoutSession.new(response) }
 
-  let(:response) { JSON.parse(File.read("./spec/fixtures/checkout_session.json"), symbolize_names: true) }
+  let(:response) { instance_double(RestClient::Response, body: File.read("./spec/fixtures/checkout_session.json")) }
 
   describe '#redirect_url' do
     context 'without promotion code' do

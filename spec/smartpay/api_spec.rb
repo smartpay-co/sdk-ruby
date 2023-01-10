@@ -13,13 +13,14 @@ RSpec.describe Smartpay::Api do
                 currency: "JPY",
                 quantity: 1
               }],
-              shipping: {
+              shippingInfo: {
                 line1: "line1",
                 locality: "locality",
                 postalCode: "123",
                 country: "JP",
                 feeAmount: 100
               },
+              customerInfo: {},
               reference: "order_ref_1234567",
               successUrl: "https://docs.smartpay.co/example-pages/checkout-successful",
               cancelUrl: "https://docs.smartpay.co/example-pages/checkout-canceled",
