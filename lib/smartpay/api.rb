@@ -3,23 +3,23 @@
 module Smartpay
   class Api
     class << self
-      def create_checkout_session(payload)
-        return create_checkout_session_for_token(payload) if payload[:mode] == "token"
+      def create_checkout_session(payload, idempotency_key: nil)
+        return create_checkout_session_for_token(payload, idempotency_key: idempotency_key) if payload[:mode] == "token"
 
         Responses::CheckoutSession.new(
-          Client.post("/checkout-sessions", params: {}, payload: Requests::CheckoutSession.new(payload).as_hash)
+          Client.post("/checkout-sessions", params: {}, payload: Requests::CheckoutSession.new(payload).as_hash, idempotency_key: idempotency_key)
         )
       end
 
-      def create_checkout_session_for_token(payload)
+      def create_checkout_session_for_token(payload, idempotency_key: nil)
         Responses::CheckoutSession.new(
-          Client.post("/checkout-sessions", params: {}, payload: Requests::CheckoutSessionForToken.new(payload).as_hash)
+          Client.post("/checkout-sessions", params: {}, payload: Requests::CheckoutSessionForToken.new(payload).as_hash, idempotency_key: idempotency_key)
         )
       end
 
-      def create_order(payload)
+      def create_order(payload, idempotency_key: nil)
         Responses::Base.new(
-          Client.post("/orders", params:{}, payload: Requests::Order.new(payload).as_hash)
+          Client.post("/orders", params:{}, payload: Requests::Order.new(payload).as_hash, idempotency_key: idempotency_key)
         )
       end
 
@@ -31,34 +31,34 @@ module Smartpay
         Responses::Base.new(Client.get("/orders/%s" % id, params: { expand: expand }))
       end
 
-      def cancel_order(id)
+      def cancel_order(id, idempotency_key: nil)
         Responses::Base.new(
-          Client.put("/orders/%s/cancellation" % id)
+          Client.put("/orders/%s/cancellation" % id, idempotency_key: idempotency_key)
         )
       end
 
-      def create_payment(payload)
+      def create_payment(payload, idempotency_key: nil)
         Responses::Base.new(
-          Client.post("/payments", params:{}, payload: Requests::Payment.new(payload).as_hash)
+          Client.post("/payments", params:{}, payload: Requests::Payment.new(payload).as_hash, idempotency_key: idempotency_key)
         )
       end
 
-      def capture(payload)
-        create_payment(payload)
+      def capture(payload, idempotency_key: nil)
+        create_payment(payload, idempotency_key: idempotency_key)
       end
 
       def get_payment(id, expand: '' )
         Responses::Base.new(Client.get("/payments/%s" % id, params: { expand: expand }))
       end
 
-      def create_refund(payload)
+      def create_refund(payload, idempotency_key: nil)
         Responses::Base.new(
-          Client.post("/refunds", params:{}, payload: Requests::Refund.new(payload).as_hash)
+          Client.post("/refunds", params:{}, payload: Requests::Refund.new(payload).as_hash, idempotency_key: idempotency_key)
         )
       end
 
-      def refund(payload)
-        create_refund(payload)
+      def refund(payload, idempotency_key: nil)
+        create_refund(payload, idempotency_key: idempotency_key)
       end
 
       def get_refund(id, expand: '' )
@@ -73,16 +73,16 @@ module Smartpay
         Responses::Base.new(Client.get("/tokens/%s" % id))
       end
 
-      def enable_token(id)
-        Responses::Base.new(Client.put("/tokens/%s/enable" % id))
+      def enable_token(id, idempotency_key: nil)
+        Responses::Base.new(Client.put("/tokens/%s/enable" % id, idempotency_key: idempotency_key))
       end
 
-      def disable_token(id)
-        Responses::Base.new(Client.put("/tokens/%s/disable" % id))
+      def disable_token(id, idempotency_key: nil)
+        Responses::Base.new(Client.put("/tokens/%s/disable" % id, idempotency_key: idempotency_key))
       end
 
-      def delete_token(id)
-        Responses::Base.new(Client.delete("/tokens/%s" % id))
+      def delete_token(id, idempotency_key: nil)
+        Responses::Base.new(Client.delete("/tokens/%s" % id, idempotency_key: idempotency_key))
       end
     end
   end

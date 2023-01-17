@@ -19,44 +19,45 @@ module Smartpay
         end
       end
 
-      def post(path, params: {}, payload: {})
+
+      def post(path, params: {}, payload: {}, idempotency_key: nil)
         request_params = default_params.merge(params)
         request_payload = default_payload.merge(payload)
-        idempotency_key = nonce
+        idempotency_key ||= nonce
         with_retries(retry_options) do
           RestClient::Request.execute(
             method: :post,
             url: api_url(path),
-            headers: headers.merge({Idempotency_Key: idempotency_key}).merge(params: request_params),
+            headers: headers.merge({ Idempotency_Key: idempotency_key }).merge(params: request_params),
             timeout: timeout,
             payload: request_payload.to_json
           )
         end
       end
 
-      def put(path, params: {}, payload: {})
-        request_params = default_params.merge(params).merge({'Idempotency-Key': nonce})
+      def put(path, params: {}, payload: {}, idempotency_key: nil)
+        request_params = default_params.merge(params)
         request_payload = default_payload.merge(payload)
-        idempotency_key = nonce
+        idempotency_key ||= nonce
         with_retries(retry_options) do
           RestClient::Request.execute(
             method: :put,
             url: api_url(path),
-            headers: headers.merge({Idempotency_Key: idempotency_key}).merge(params: request_params),
+            headers: headers.merge({ Idempotency_Key: idempotency_key }).merge(params: request_params),
             timeout: timeout,
             payload: request_payload.to_json
           )
         end
       end
 
-      def delete(path, params: {})
-        request_params = default_params.merge(params).merge({'Idempotency-Key': nonce})
-        idempotency_key = nonce
+      def delete(path, params: {}, idempotency_key: nil)
+        request_params = default_params.merge(params)
+        idempotency_key ||= nonce
         with_retries(retry_options) do
           RestClient::Request.execute(
             method: :delete,
             url: api_url(path),
-            headers: headers.merge({Idempotency_Key: idempotency_key}).merge(params: request_params),
+            headers: headers.merge({ Idempotency_Key: idempotency_key }).merge(params: request_params),
             timeout: timeout
           )
         end
