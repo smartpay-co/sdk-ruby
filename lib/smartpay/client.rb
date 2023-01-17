@@ -9,21 +9,28 @@ module Smartpay
     class << self
       def get(path, params: {})
         request_params = default_params.merge(params)
-        RestClient::Request.execute(method: :get, url: api_url(path),
-                                               headers: headers.merge(params: request_params),
-                                               timeout: timeout)
+        with_retries(retry_options) do
+          RestClient::Request.execute(
+            method: :get,
+            url: api_url(path),
+            headers: headers.merge(params: request_params),
+            timeout: timeout
+          )
+        end
       end
 
       def post(path, params: {}, payload: {})
         request_params = default_params.merge(params)
         request_payload = default_payload.merge(payload)
         idempotency_key = nonce
-        with_retries(:max_tries => 1, :rescue => [RestClient::BadRequest, RestClient::BadGateway, RestClient::ServiceUnavailable, RestClient::GatewayTimeout]) do
-          RestClient::Request.execute(method: :post, url: api_url(path),
-                                                params: request_params,
-                                                headers: headers.merge({Idempotency_Key: idempotency_key}).merge(params: request_params),
-                                                timeout: timeout,
-                                                payload: request_payload.to_json)
+        with_retries(retry_options) do
+          RestClient::Request.execute(
+            method: :post,
+            url: api_url(path),
+            headers: headers.merge({Idempotency_Key: idempotency_key}).merge(params: request_params),
+            timeout: timeout,
+            payload: request_payload.to_json
+          )
         end
       end
 
@@ -31,23 +38,27 @@ module Smartpay
         request_params = default_params.merge(params).merge({'Idempotency-Key': nonce})
         request_payload = default_payload.merge(payload)
         idempotency_key = nonce
-        with_retries(:max_tries => 1, :rescue => [RestClient::InternalServerError, RestClient::BadGateway, RestClient::ServiceUnavailable, RestClient::GatewayTimeout]) do
-          RestClient::Request.execute(method: :put, url: api_url(path),
-                                                params: request_params,
-                                                headers: headers.merge({Idempotency_Key: idempotency_key}).merge(params: request_params),
-                                                timeout: timeout,
-                                                payload: request_payload.to_json)
+        with_retries(retry_options) do
+          RestClient::Request.execute(
+            method: :put,
+            url: api_url(path),
+            headers: headers.merge({Idempotency_Key: idempotency_key}).merge(params: request_params),
+            timeout: timeout,
+            payload: request_payload.to_json
+          )
         end
       end
 
       def delete(path, params: {})
         request_params = default_params.merge(params).merge({'Idempotency-Key': nonce})
         idempotency_key = nonce
-        with_retries(:max_tries => 1, :rescue => [RestClient::InternalServerError, RestClient::BadGateway, RestClient::ServiceUnavailable, RestClient::GatewayTimeout]) do
-          RestClient::Request.execute(method: :delete, url: api_url(path),
-                                                params: request_params,
-                                                headers: headers.merge({Idempotency_Key: idempotency_key}).merge(params: request_params),
-                                                timeout: timeout)
+        with_retries(retry_options) do
+          RestClient::Request.execute(
+            method: :delete,
+            url: api_url(path),
+            headers: headers.merge({Idempotency_Key: idempotency_key}).merge(params: request_params),
+            timeout: timeout
+          )
         end
       end
 
@@ -62,7 +73,7 @@ module Smartpay
       end
 
       def timeout
-        Smartpay.configuration.post_timeout
+        Smartpay.configuration.request_timeout
       end
 
       def headers
@@ -82,6 +93,10 @@ module Smartpay
           'dev-lang': :ruby,
           'sdk-version': Smartpay::VERSION
         }.freeze
+      end
+
+      def retry_options
+        Smartpay.configuration.retry_options
       end
 
       def default_payload
