@@ -52,7 +52,7 @@ RSpec.describe Smartpay::Api do
         login_response = RestClient::Request.execute(
           method: :post,
           url: "https://#{ENV['API_BASE']}/consumers/auth/login",
-          timeout: Smartpay.configuration.post_timeout,
+          timeout: Smartpay.configuration.request_timeout,
           headers: {
             accept: :json,
             content_type: :json
@@ -65,7 +65,7 @@ RSpec.describe Smartpay::Api do
         RestClient::Request.execute(
           method: :put,
           url: "https://#{ENV['API_BASE']}/tokens/#{token_id}/approve",
-          timeout: Smartpay.configuration.post_timeout,
+          timeout: Smartpay.configuration.request_timeout,
           headers: {
             accept: :json,
             content_type: :json,

@@ -1,22 +1,22 @@
 require 'spec_helper'
 
 RSpec.describe Smartpay::Configuration do
-  describe '.post_timeout' do
+  describe '.request_timeout' do
     let(:config) { Smartpay::Configuration.new }
 
-    context 'when set post_timeout to nil' do
-      before { config.post_timeout = nil }
+    context 'when set request_timeout to nil' do
+      before { config.request_timeout = nil }
 
       it 'fallbacks to default setting' do
-        expect(config.post_timeout).to eq(Smartpay::Configuration::DEFAULT_TIMEOUT_SETTING)
+        expect(config.request_timeout).to eq(Smartpay::Configuration::DEFAULT_TIMEOUT_SETTING)
       end
     end
 
-    context 'when set post_timeout to 20' do
-      before { config.post_timeout = 20 }
+    context 'when set request_timeout to 20' do
+      before { config.request_timeout = 20 }
 
       it 'can override the default setting' do
-        expect(config.post_timeout).to eq(20)
+        expect(config.request_timeout).to eq(20)
       end
     end
   end
@@ -88,6 +88,26 @@ RSpec.describe Smartpay::Configuration do
 
       it 'can override the default setting' do
         expect(config.checkout_url).to eq('https://checkout.smartpay.co/v2')
+      end
+    end
+  end
+
+  describe '.retry_options' do
+    let(:config) { Smartpay::Configuration.new }
+
+    context 'when set retry_options to nil' do
+      before { config.retry_options = nil }
+
+      it 'fallbacks to default setting' do
+        expect(config.retry_options).to eq(Smartpay::Configuration::DEFAULT_RETRY_OPTIONS)
+      end
+    end
+
+    context 'when set retry_options to {max_tries: 100}' do
+      before { config.retry_options = { max_tries: 100 } }
+
+      it 'can override the default setting' do
+        expect(config.retry_options).to eq({ max_tries: 100 } )
       end
     end
   end
