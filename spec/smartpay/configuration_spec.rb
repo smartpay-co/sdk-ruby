@@ -4,14 +4,6 @@ RSpec.describe Smartpay::Configuration do
   describe '.request_timeout' do
     let(:config) { Smartpay::Configuration.new }
 
-    context 'when set request_timeout to nil' do
-      before { config.request_timeout = nil }
-
-      it 'fallbacks to default setting' do
-        expect(config.request_timeout).to eq(Smartpay::Configuration::DEFAULT_TIMEOUT_SETTING)
-      end
-    end
-
     context 'when set request_timeout to 20' do
       before { config.request_timeout = 20 }
 
@@ -24,42 +16,15 @@ RSpec.describe Smartpay::Configuration do
   describe '.api_url' do
     let(:config) { Smartpay::Configuration.new }
 
-    context 'when set api_url to nil' do
-      before do
-        config.api_url = nil
-        ENV.delete('SMARTPAY_API_PREFIX')
-      end
-
-      it 'fallbacks to default setting' do
-        expect(config.api_url).to eq(Smartpay::Configuration::DEFAULT_API_URL)
-      end
-    end
-
     context 'when environment has set SMARTPAY_API_PREFIX' do
-      context 'when variable include the string `api.smartpay`' do
-        before do
-          config.api_url = nil
-          ENV['SMARTPAY_API_PREFIX'] = 'https://API.smartpay.co/from_env'
-        end
-
-        after { ENV['SMARTPAY_API_PREFIX'] = nil }
-
-        it 'can override the default setting' do
-          expect(config.api_url).to eq('https://api.smartpay.co/from_env')
-        end
+      before do
+        ENV['SMARTPAY_API_PREFIX'] = 'https://API.smartpay.co/from_env'
       end
 
-      context 'when variable does not include the string `api.smartpay`' do
-        before do
-          config.api_url = nil
-          ENV['SMARTPAY_API_PREFIX'] = 'https://somewhere.co/from_env'
-        end
+      after { ENV['SMARTPAY_API_PREFIX'] = nil }
 
-        after { ENV['SMARTPAY_API_PREFIX'] = nil }
-
-        it 'should fallback to the default setting' do
-          expect(config.api_url).to eq('https://api.smartpay.co/v1')
-        end
+      it 'can override the default setting' do
+        expect(config.api_url).to eq('https://api.smartpay.co/from_env')
       end
     end
 
@@ -72,36 +37,8 @@ RSpec.describe Smartpay::Configuration do
     end
   end
 
-  describe '.checkout_url' do
-    let(:config) { Smartpay::Configuration.new }
-
-    context 'when set checkout_url to nil' do
-      before { config.checkout_url = nil }
-
-      it 'fallbacks to default setting' do
-        expect(config.checkout_url).to eq(Smartpay::Configuration::DEFAULT_CHECKOUT_URL)
-      end
-    end
-
-    context 'when set checkout_url to new api url' do
-      before { config.checkout_url = 'https://checkout.smartpay.co/v2' }
-
-      it 'can override the default setting' do
-        expect(config.checkout_url).to eq('https://checkout.smartpay.co/v2')
-      end
-    end
-  end
-
   describe '.retry_options' do
     let(:config) { Smartpay::Configuration.new }
-
-    context 'when set retry_options to nil' do
-      before { config.retry_options = nil }
-
-      it 'fallbacks to default setting' do
-        expect(config.retry_options).to eq(Smartpay::Configuration::DEFAULT_RETRY_OPTIONS)
-      end
-    end
 
     context 'when set retry_options to {max_tries: 100}' do
       before { config.retry_options = { max_tries: 100 } }

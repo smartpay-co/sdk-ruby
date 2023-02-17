@@ -3,13 +3,12 @@
 require "rest-client"
 
 module Smartpay
+  # Smartpay configuration
   class Configuration
-    attr_accessor :public_key, :secret_key
-    attr_writer :request_timeout, :api_url, :checkout_url, :retry_options
+    attr_accessor :public_key, :secret_key, :request_timeout, :api_url, :retry_options
 
     DEFAULT_TIMEOUT_SETTING = 30
     DEFAULT_API_URL = "https://api.smartpay.co/v1"
-    DEFAULT_CHECKOUT_URL = "https://checkout.smartpay.co"
     DEFAULT_RETRY_OPTIONS = {
       max_tries: 1,
       base_sleep_seconds: 0.5,
@@ -19,44 +18,14 @@ module Smartpay
     }.freeze
 
     def initialize
+      reset
+    end
+
+    def reset
       @request_timeout = DEFAULT_TIMEOUT_SETTING
-      @api_url = if in_development_mode?
-                   ENV["SMARTPAY_API_PREFIX"].downcase || DEFAULT_API_URL
-                 else
-                   DEFAULT_API_URL
-                 end
-      @checkout_url = if in_development_mode? && ENV["SMARTPAY_CHECKOUT_URL"].is_a?(String)
-                        ENV["SMARTPAY_CHECKOUT_URL"].downcase || DEFAULT_CHECKOUT_URL
-                      else
-                        DEFAULT_CHECKOUT_URL
-                      end
+      @api_url = ENV.fetch("SMARTPAY_API_PREFIX", DEFAULT_API_URL).downcase
       @retry_options = DEFAULT_RETRY_OPTIONS
-    end
-
-    def request_timeout
-      @request_timeout || DEFAULT_TIMEOUT_SETTING
-    end
-
-    def api_url
-      if in_development_mode?
-        @api_url || ENV["SMARTPAY_API_PREFIX"].downcase || DEFAULT_API_URL
-      else
-        @api_url || DEFAULT_API_URL
-      end
-    end
-
-    def checkout_url
-      @checkout_url || DEFAULT_CHECKOUT_URL
-    end
-
-    def retry_options
-      @retry_options || DEFAULT_RETRY_OPTIONS
-    end
-
-    private
-
-    def in_development_mode?
-      ENV["SMARTPAY_API_PREFIX"].downcase.include?("api.smartpay") if ENV["SMARTPAY_API_PREFIX"].is_a?(String)
+      @request_timeout = DEFAULT_TIMEOUT_SETTING
     end
   end
 end
