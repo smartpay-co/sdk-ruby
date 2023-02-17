@@ -26,6 +26,8 @@ module Smartpay
       @api_url = ENV.fetch("SMARTPAY_API_PREFIX", DEFAULT_API_URL).downcase
       @retry_options = DEFAULT_RETRY_OPTIONS
       @request_timeout = DEFAULT_TIMEOUT_SETTING
+      @public_key = ENV.fetch("SMARTPAY_PUBLIC_KEY", nil)
+      @secret_key = ENV.fetch("SMARTPAY_SECRET_KEY", nil)
     end
   end
 end

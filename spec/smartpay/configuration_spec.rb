@@ -48,4 +48,52 @@ RSpec.describe Smartpay::Configuration do
       end
     end
   end
+
+  describe '.public_key' do
+    let(:config) { Smartpay::Configuration.new }
+
+    context 'when environment has set SMARTPAY_PUBLIC_KEY' do
+      before do
+        ENV['SMARTPAY_PUBLIC_KEY'] = 'pub'
+      end
+
+      after { ENV['SMARTPAY_PUBLIC_KEY'] = nil }
+
+      it 'can set the key from env' do
+        expect(config.public_key).to eq('pub')
+      end
+    end
+
+    context 'when set key to new key' do
+      before { config.public_key = 'pub2' }
+
+      it 'can override the setting' do
+        expect(config.public_key).to eq('pub2')
+      end
+    end
+  end
+
+  describe '.secret_key' do
+    let(:config) { Smartpay::Configuration.new }
+
+    context 'when environment has set SMARTPAY_SECRET_KEY' do
+      before do
+        ENV['SMARTPAY_SECRET_KEY'] = 'sec'
+      end
+
+      after { ENV['SMARTPAY_SECRET_KEY'] = nil }
+
+      it 'can set the key from env' do
+        expect(config.secret_key).to eq('sec')
+      end
+    end
+
+    context 'when set key to new key' do
+      before { config.secret_key = 'sec2' }
+
+      it 'can override the setting' do
+        expect(config.secret_key).to eq('sec2')
+      end
+    end
+  end
 end
