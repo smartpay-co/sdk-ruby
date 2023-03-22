@@ -81,7 +81,7 @@ RSpec.describe Smartpay::Api do
 
         list_checkout_sessions = Smartpay::Api.get_checkout_sessions(max_results: 3)
         expect(list_checkout_sessions.response[:maxResults]).to eq(3)
-        
+
         order_id = session.response[:order][:id]
         PAYMENT_AMOUNT = 150
 
@@ -119,23 +119,29 @@ RSpec.describe Smartpay::Api do
           amount: PAYMENT_AMOUNT,
           currency: "JPY",
           cancel_remainder: "manual"
-        });
+        })
 
         payment2 = Smartpay::Api.capture({
           order: order_id,
           amount: PAYMENT_AMOUNT,
           currency: "JPY",
           cancel_remainder: "manual"
-        });
+        })
 
         expect(payment1.as_hash[:id]).not_to be_empty
         expect(payment2.as_hash[:id]).not_to be_empty
         expect(payment2.as_hash[:amount]).to eq PAYMENT_AMOUNT
 
+        Smartpay::Api.update_payment(payment2.as_hash[:id], { reference: "test" })
+
         retrived_payment_2 = Smartpay::Api.get_payment(payment2.as_hash[:id])
 
         expect(retrived_payment_2.as_hash[:id]).to eq payment2.as_hash[:id]
         expect(retrived_payment_2.as_hash[:amount]).to eq PAYMENT_AMOUNT
+        expect(retrived_payment_2.as_hash[:reference]).to eq "test"
+
+        list_payments = Smartpay::Api.get_payments(max_results: 3)
+        expect(list_payments.response[:maxResults]).to eq(3)
 
         REFUND_AMOUNT = 1
 
@@ -147,14 +153,14 @@ RSpec.describe Smartpay::Api do
           amount: REFUND_AMOUNT,
           currency: "JPY",
           reason: Smartpay::REJECT_REQUEST_BY_CUSTOMER
-        });
+        })
 
         refund2 = Smartpay::Api.refund({
           payment: refundable_payment,
           amount: REFUND_AMOUNT + 1,
           currency: "JPY",
           reason: Smartpay::REJECT_REQUEST_BY_CUSTOMER
-        });
+        })
 
         expect(refund1.as_hash[:amount]).to eq REFUND_AMOUNT
         expect(refund2.as_hash[:amount]).to eq REFUND_AMOUNT + 1

@@ -19,29 +19,31 @@ module Smartpay
         end
       end
 
-
       def post(path, params: {}, payload: {}, idempotency_key: nil)
-        request_params = default_params.merge(params)
-        request_payload = default_payload.merge(payload)
-        idempotency_key ||= nonce
-        with_retries(retry_options) do
-          RestClient::Request.execute(
-            method: :post,
-            url: api_url(path),
-            headers: headers.merge({ Idempotency_Key: idempotency_key }).merge(params: request_params),
-            timeout: timeout,
-            payload: request_payload.to_json
-          )
-        end
+        request(:post, path, params: params, payload: payload, idempotency_key: idempotency_key)
       end
 
       def put(path, params: {}, payload: {}, idempotency_key: nil)
+        request(:put, path, params: params, payload: payload, idempotency_key: idempotency_key)
+      end
+
+      def patch(path, params: {}, payload: {}, idempotency_key: nil)
+        request(:patch, path, params: params, payload: payload, idempotency_key: idempotency_key)
+      end
+
+      def delete(path, params: {}, idempotency_key: nil)
+        request(:delete, path, params: params, idempotency_key: idempotency_key)
+      end
+
+      private
+
+      def request(method, path, params: {}, payload: {}, idempotency_key: nil)
         request_params = default_params.merge(params)
         request_payload = default_payload.merge(payload)
         idempotency_key ||= nonce
         with_retries(retry_options) do
           RestClient::Request.execute(
-            method: :put,
+            method: method,
             url: api_url(path),
             headers: headers.merge({ Idempotency_Key: idempotency_key }).merge(params: request_params),
             timeout: timeout,
@@ -49,21 +51,6 @@ module Smartpay
           )
         end
       end
-
-      def delete(path, params: {}, idempotency_key: nil)
-        request_params = default_params.merge(params)
-        idempotency_key ||= nonce
-        with_retries(retry_options) do
-          RestClient::Request.execute(
-            method: :delete,
-            url: api_url(path),
-            headers: headers.merge({ Idempotency_Key: idempotency_key }).merge(params: request_params),
-            timeout: timeout
-          )
-        end
-      end
-
-      private
 
       def nonce 
         SecureRandom.hex
