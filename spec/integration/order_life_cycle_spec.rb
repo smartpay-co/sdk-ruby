@@ -76,6 +76,12 @@ RSpec.describe Smartpay::Api do
         expect(session.response).not_to be_empty
         expect(session.redirect_url).not_to be_empty
 
+        retrieved_checkout_session = Smartpay::Api.get_checkout_session(session.response[:id])
+        expect(retrieved_checkout_session.response[:order]).to eq(session.response[:order][:id])
+
+        list_checkout_sessions = Smartpay::Api.get_checkout_sessions(max_results: 3)
+        expect(list_checkout_sessions.response[:maxResults]).to eq(3)
+        
         order_id = session.response[:order][:id]
         PAYMENT_AMOUNT = 150
 
