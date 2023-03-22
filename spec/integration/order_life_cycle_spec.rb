@@ -134,11 +134,11 @@ RSpec.describe Smartpay::Api do
 
         Smartpay::Api.update_payment(payment2.as_hash[:id], { reference: "test" })
 
-        retrived_payment_2 = Smartpay::Api.get_payment(payment2.as_hash[:id])
+        retrieved_payment_2 = Smartpay::Api.get_payment(payment2.as_hash[:id])
 
-        expect(retrived_payment_2.as_hash[:id]).to eq payment2.as_hash[:id]
-        expect(retrived_payment_2.as_hash[:amount]).to eq PAYMENT_AMOUNT
-        expect(retrived_payment_2.as_hash[:reference]).to eq "test"
+        expect(retrieved_payment_2.as_hash[:id]).to eq payment2.as_hash[:id]
+        expect(retrieved_payment_2.as_hash[:amount]).to eq PAYMENT_AMOUNT
+        expect(retrieved_payment_2.as_hash[:reference]).to eq "test"
 
         list_payments = Smartpay::Api.get_payments(max_results: 3)
         expect(list_payments.response[:maxResults]).to eq(3)
@@ -165,10 +165,16 @@ RSpec.describe Smartpay::Api do
         expect(refund1.as_hash[:amount]).to eq REFUND_AMOUNT
         expect(refund2.as_hash[:amount]).to eq REFUND_AMOUNT + 1
 
-        retrived_refund2 = Smartpay::Api.get_refund(refund2.as_hash[:id])
+        Smartpay::Api.update_refund(refund2.as_hash[:id], { reference: "test" })
 
-        expect(retrived_refund2.as_hash[:id]).to eq refund2.as_hash[:id]
-        expect(retrived_refund2.as_hash[:amount]).to eq REFUND_AMOUNT + 1
+        retrieved_refund2 = Smartpay::Api.get_refund(refund2.as_hash[:id])
+
+        expect(retrieved_refund2.as_hash[:id]).to eq refund2.as_hash[:id]
+        expect(retrieved_refund2.as_hash[:amount]).to eq REFUND_AMOUNT + 1
+        expect(retrieved_refund2.as_hash[:reference]).to eq "test"
+
+        list_refunds = Smartpay::Api.get_refunds(max_results: 3)
+        expect(list_refunds.response[:maxResults]).to eq(3)
 
       end
     end

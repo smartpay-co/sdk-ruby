@@ -13,12 +13,14 @@ require_relative "smartpay/requests/order"
 require_relative "smartpay/requests/payment"
 require_relative "smartpay/requests/payment_update"
 require_relative "smartpay/requests/refund"
+require_relative "smartpay/requests/refund_update"
 require_relative "smartpay/responses/base"
 require_relative "smartpay/responses/checkout_session"
 
+# Smartpay
 module Smartpay
-  REJECT_REQUEST_BY_CUSTOMER = 'requested_by_customer'
-  REJECT_FRAUDULENT = 'fraudulent'
+  REJECT_REQUEST_BY_CUSTOMER = "requested_by_customer"
+  REJECT_FRAUDULENT = "fraudulent"
 
   class << self
     attr_accessor :configuration

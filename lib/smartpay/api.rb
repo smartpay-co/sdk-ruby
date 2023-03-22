@@ -83,6 +83,16 @@ module Smartpay
         Responses::Base.new(Client.get("/refunds/%s" % id, params: { expand: expand }))
       end
 
+      def get_refunds(page_token: nil, max_results: nil, expand: "")
+        Responses::Base.new(Client.get("/refunds", params: { pageToken: page_token, maxResults: max_results, expand: expand }))
+      end
+
+      def update_refund(id, payload, idempotency_key: nil)
+        Responses::Base.new(
+          Client.patch("/refunds/%s" % id, payload: Requests::RefundUpdate.new(payload).as_hash, idempotency_key: idempotency_key)
+        )
+      end
+
       def get_tokens(page_token: nil, max_results: nil)
         Responses::Base.new(Client.get("/tokens", params: { pageToken: page_token, maxResults: max_results }))
       end

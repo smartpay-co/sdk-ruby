@@ -2,8 +2,8 @@
 
 module Smartpay
   module Requests
-    # PaymentUpdate
-    class PaymentUpdate
+    # RefundUpdate
+    class RefundUpdate
       attr_accessor :payload
 
       def initialize(raw_payload)
