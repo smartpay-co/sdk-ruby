@@ -189,7 +189,7 @@ RSpec.describe Smartpay::Api do
               amount: 250,
               currency: "JPY",
               quantity: 1
-            },
+            }
           ],
           customerInfo: {
             accountAge: 20,

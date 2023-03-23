@@ -93,6 +93,26 @@ module Smartpay
         )
       end
 
+      def create_coupon(payload, idempotency_key: nil)
+        Responses::Base.new(
+          Client.post("/coupons", params: {}, payload: Requests::Coupon.new(payload).as_hash, idempotency_key: idempotency_key)
+        )
+      end
+
+      def get_coupon(id)
+        Responses::Base.new(Client.get("/coupons/%s" % id))
+      end
+
+      def get_coupons(page_token: nil, max_results: nil)
+        Responses::Base.new(Client.get("/coupons", params: { pageToken: page_token, maxResults: max_results }))
+      end
+
+      def update_coupon(id, payload, idempotency_key: nil)
+        Responses::Base.new(
+          Client.patch("/coupons/%s" % id, payload: Requests::CouponUpdate.new(payload).as_hash, idempotency_key: idempotency_key)
+        )
+      end
+
       def get_tokens(page_token: nil, max_results: nil)
         Responses::Base.new(Client.get("/tokens", params: { pageToken: page_token, maxResults: max_results }))
       end

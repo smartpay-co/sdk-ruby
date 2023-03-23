@@ -14,6 +14,8 @@ require_relative "smartpay/requests/payment"
 require_relative "smartpay/requests/payment_update"
 require_relative "smartpay/requests/refund"
 require_relative "smartpay/requests/refund_update"
+require_relative "smartpay/requests/coupon"
+require_relative "smartpay/requests/coupon_update"
 require_relative "smartpay/responses/base"
 require_relative "smartpay/responses/checkout_session"
 

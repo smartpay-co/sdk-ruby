@@ -1,5 +1,6 @@
 module Smartpay
   module Requests
+    # Validator
     module Validator
 
       private
