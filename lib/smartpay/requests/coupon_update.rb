@@ -18,8 +18,8 @@ module Smartpay
 
       def normalize_payload
         {
-          active: payload[:reference],
-          name: payload[:description],
+          active: payload[:active],
+          name: payload[:name],
           metadata: payload[:metadata] || {}
         }
       end

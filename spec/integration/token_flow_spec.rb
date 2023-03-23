@@ -10,7 +10,7 @@ RSpec.describe Smartpay::Api do
 
   describe "token flow" do
     context "with valid request payload" do
-      it 'compltes the whole token flow' do
+      it "completes the whole token flow" do
         session = Smartpay::Api.create_checkout_session_for_token(
           {
             mode: "token",
