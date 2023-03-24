@@ -113,6 +113,26 @@ module Smartpay
         )
       end
 
+      def create_promotion_code(payload, idempotency_key: nil)
+        Responses::Base.new(
+          Client.post("/promotion-codes", params: {}, payload: Requests::PromotionCode.new(payload).as_hash, idempotency_key: idempotency_key)
+        )
+      end
+
+      def get_promotion_code(id)
+        Responses::Base.new(Client.get("/promotion-codes/%s" % id))
+      end
+
+      def get_promotion_codes(page_token: nil, max_results: nil)
+        Responses::Base.new(Client.get("/promotion-codes", params: { pageToken: page_token, maxResults: max_results }))
+      end
+
+      def update_promotion_code(id, payload, idempotency_key: nil)
+        Responses::Base.new(
+          Client.patch("/promotion-codes/%s" % id, payload: Requests::PromotionCodeUpdate.new(payload).as_hash, idempotency_key: idempotency_key)
+        )
+      end
+
       def get_tokens(page_token: nil, max_results: nil)
         Responses::Base.new(Client.get("/tokens", params: { pageToken: page_token, maxResults: max_results }))
       end
