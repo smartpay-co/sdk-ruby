@@ -18,6 +18,8 @@ require_relative "smartpay/requests/coupon"
 require_relative "smartpay/requests/coupon_update"
 require_relative "smartpay/requests/promotion_code"
 require_relative "smartpay/requests/promotion_code_update"
+require_relative "smartpay/requests/webhook_endpoint"
+require_relative "smartpay/requests/webhook_endpoint_update"
 require_relative "smartpay/responses/base"
 require_relative "smartpay/responses/checkout_session"
 

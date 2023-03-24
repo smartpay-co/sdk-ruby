@@ -133,6 +133,32 @@ module Smartpay
         )
       end
 
+      def create_webhook_endpoint(payload, idempotency_key: nil)
+        Responses::Base.new(
+          Client.post("/webhook-endpoints", params: {}, payload: Requests::WebhookEndpoint.new(payload).as_hash, idempotency_key: idempotency_key)
+        )
+      end
+
+      def get_webhook_endpoint(id)
+        Responses::Base.new(Client.get("/webhook-endpoints/%s" % id))
+      end
+
+      def get_webhook_endpoints(page_token: nil, max_results: nil)
+        Responses::Base.new(Client.get("/webhook-endpoints", params: { pageToken: page_token, maxResults: max_results }))
+      end
+
+      def update_webhook_endpoint(id, payload, idempotency_key: nil)
+        Responses::Base.new(
+          Client.patch("/webhook-endpoints/%s" % id, payload: Requests::WebhookEndpointUpdate.new(payload).as_hash, idempotency_key: idempotency_key)
+        )
+      end
+
+      def delete_webhook_endpoint(id)
+        Responses::Base.new(
+          Client.delete("/webhook-endpoints/%s" % id)
+        )
+      end
+
       def get_tokens(page_token: nil, max_results: nil)
         Responses::Base.new(Client.get("/tokens", params: { pageToken: page_token, maxResults: max_results }))
       end
@@ -149,8 +175,8 @@ module Smartpay
         Responses::Base.new(Client.put("/tokens/%s/disable" % id, idempotency_key: idempotency_key))
       end
 
-      def delete_token(id, idempotency_key: nil)
-        Responses::Base.new(Client.delete("/tokens/%s" % id, idempotency_key: idempotency_key))
+      def delete_token(id)
+        Responses::Base.new(Client.delete("/tokens/%s" % id))
       end
     end
   end

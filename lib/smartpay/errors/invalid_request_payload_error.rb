@@ -1,5 +1,6 @@
 module Smartpay
   module Errors
+    # InvalidRequestPayloadError
     class InvalidRequestPayloadError < ArgumentError
       attr_accessor :key_name
 
@@ -9,7 +10,7 @@ module Smartpay
       end
 
       def message
-        "#{key_name} can't be blank."
+        "#{key_name} can't be blank or contains invalid value."
       end
     end
   end
