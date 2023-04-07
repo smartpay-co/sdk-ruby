@@ -2,27 +2,24 @@
 
 module Smartpay
   module Requests
+    # Payment
     class Payment
+      include Validator
+
       attr_accessor :payload
 
-      REQUIREMENT_KEY_NAME = [:order, :amount, :currency].freeze
+      REQUIREMENT_KEY_NAME = %i[order amount currency].freeze
 
       def initialize(raw_payload)
         @payload = raw_payload.transform_keys(&:to_sym)
       end
 
       def as_hash
-        check_requirement!
+        check_requirement!(REQUIREMENT_KEY_NAME)
         normalize_payload
       end
 
       private
-
-      def check_requirement!
-        REQUIREMENT_KEY_NAME.each do |key_name|
-          raise Errors::InvalidRequestPayloadError, key_name unless payload.include?(key_name)
-        end
-      end
 
       def normalize_payload
         {
